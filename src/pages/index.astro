@@ -1,0 +1,63 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ClientCard from "../components/ClientCard.astro";
+import PanoramaViewer from "../components/PanoramaViewer.astro";
+import WhatsAppButton from "../components/WhatsAppButton.astro";
+import { clients } from "../data/clients.js";
+---
+
+<Layout>
+  <!-- Header / Hero -->
+  <header class="relative border-b border-white/10">
+    <div class="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
+      <div class="flex flex-col items-center gap-6 text-center md:flex-row md:justify-between md:text-left">
+        <div class="flex flex-col items-center gap-3 md:items-start">
+          <img
+            src="/logo.png"
+            alt="TMJL Marketing Local"
+            width="160"
+            height="auto"
+            class="h-auto w-32 md:w-40"
+            loading="eager"
+            decoding="async"
+          />
+        </div>
+
+        <div class="max-w-md">
+          <h1 class="font-serif text-3xl font-bold leading-tight text-cream md:text-4xl">
+            Portfólio 360°
+          </h1>
+          <p class="mt-2 text-sm font-light leading-relaxed text-cream-muted md:text-base">
+            Experiências imersivas em fotos 360° para restaurantes, bares e comércios locais.
+          </p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Grid de clientes -->
+  <main class="mx-auto max-w-7xl px-4 py-10 md:px-6 md:py-16">
+    <div class="mb-8 flex items-center gap-3 md:mb-10">
+      <span class="h-px flex-1 bg-gradient-to-r from-transparent via-gold/50 to-transparent"></span>
+      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-gold">Clientes</p>
+      <span class="h-px flex-1 bg-gradient-to-r from-transparent via-gold/50 to-transparent"></span>
+    </div>
+
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {clients.map((client) => <ClientCard client={client} />)}
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-white/10 bg-near-black">
+    <div
+      class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-6 text-center text-xs text-cream-muted md:flex-row md:px-6 md:text-left"
+    >
+      <p>© {new Date().getFullYear()} TMJL Marketing Local. Todos os direitos reservados.</p>
+      <p>Fotos 360° | Marketing Digital | Google Street View</p>
+    </div>
+  </footer>
+
+  <PanoramaViewer />
+  <WhatsAppButton />
+</Layout>

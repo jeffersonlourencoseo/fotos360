@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Montserrat", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-serif: "Cinzel", ui-serif, Georgia, "Times New Roman", serif;
+
+  --color-near-black: #0a0a0a;
+  --color-gold: #c5a059;
+  --color-gold-light: #d4b36b;
+  --color-cream: #f4f1ea;
+  --color-cream-muted: #b8b2a7;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-near-black text-cream;
+}
+
+/* Pannellum overrides para dark luxury */
+.pnlm-container {
+  background: #0a0a0a !important;
+}
+
+.pnlm-load-button {
+  background: #c5a059 !important;
+  color: #0a0a0a !important;
+  border-radius: 9999px !important;
+  font-family: "Montserrat", sans-serif !important;
+  font-weight: 600 !important;
+}
+
+.pnlm-load-button:hover {
+  background: #d4b36b !important;
+}
+
+.pnlm-compass {
+  filter: invert(1);
+}
+
+.pnlm-controls {
+  filter: invert(1);
+}

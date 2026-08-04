@@ -1,0 +1,46 @@
+---
+import "../styles/global.css";
+import { clients } from "../data/clients.js";
+
+const { title = "Portfólio 360° | TMJL Marketing Local" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content="Portfólio de fotos 360° de estabelecimentos. TMJL Marketing Local." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <title>{title}</title>
+
+    <!-- Tipografia -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Pannellum -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"
+      crossorigin="anonymous"
+      defer></script>
+
+    <!-- Dados dos clientes para o visualizador client-side -->
+    <script is:inline define:vars={{ clients }}>
+      window.__CLIENTS__ = clients;
+    </script>
+  </head>
+  <body class="bg-[#0a0a0a] text-[#f4f1ea] antialiased font-sans">
+    <slot />
+  </body>
+</html>

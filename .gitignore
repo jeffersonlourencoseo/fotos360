@@ -1,0 +1,36 @@
+# build output
+dist/
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+
+# environment variables
+.env
+.env.production
+
+# macOS-specific files
+.DS_Store
+
+# jetbrains setting folder
+.idea/
+
+# source assets and brief (already copied to /public)
+logo/
+RESTAURANTE\ MANERO'S/
+RASTAURANTE\ DELÍCIA\ DO\ IRAJÁ/
+BARBEARIA\ LOS\ HERMANOS/
+prompt site.txt
+
+# claude code local files
+.claude/
+AGENTS.md
+CLAUDE.md

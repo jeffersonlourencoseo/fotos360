@@ -1,0 +1,360 @@
+---
+---
+
+<div
+  id="panorama-modal"
+  class="fixed inset-0 z-50 hidden h-[100dvh] w-full flex-col bg-near-black"
+  aria-modal="true"
+  role="dialog"
+  aria-label="Visualizador 360°"
+>
+  <!-- Header -->
+  <header
+    class="flex items-center justify-between border-b border-white/10 bg-near-black px-4 py-3 md:px-6"
+  >
+    <div class="min-w-0">
+      <h2
+        id="viewer-title"
+        class="truncate font-serif text-lg font-semibold text-cream md:text-xl"
+      >
+        Carregando...
+      </h2>
+      <p id="viewer-counter" class="text-xs text-cream-muted md:text-sm">0 / 0</p>
+    </div>
+
+    <div class="flex items-center gap-2 md:gap-3">
+      <button
+        id="viewer-fullscreen"
+        type="button"
+        class="rounded-full border border-white/20 p-2 text-cream transition-colors hover:border-gold hover:text-gold md:p-2.5"
+        aria-label="Tela cheia"
+        title="Tela cheia"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+          <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
+          <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
+          <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+        </svg>
+      </button>
+
+      <button
+        id="viewer-close"
+        type="button"
+        class="rounded-full border border-white/20 p-2 text-cream transition-colors hover:border-gold hover:text-gold md:p-2.5"
+        aria-label="Fechar visualizador"
+        title="Fechar"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M18 6 6 18"></path>
+          <path d="m6 6 12 12"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Viewer area -->
+  <div class="relative flex-1 overflow-hidden">
+    <div id="panorama-viewer" class="h-full w-full"></div>
+
+    <!-- Navigation arrows -->
+    <button
+      id="viewer-prev"
+      type="button"
+      class="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full border border-white/10 bg-near-black/70 p-3 text-cream backdrop-blur-sm transition-colors hover:border-gold hover:text-gold md:left-4"
+      aria-label="Foto anterior"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="m15 18-6-6 6-6"></path>
+      </svg>
+    </button>
+
+    <button
+      id="viewer-next"
+      type="button"
+      class="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full border border-white/10 bg-near-black/70 p-3 text-cream backdrop-blur-sm transition-colors hover:border-gold hover:text-gold md:right-4"
+      aria-label="Próxima foto"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="m9 18 6-6-6-6"></path>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Thumbnails -->
+  <footer class="border-t border-white/10 bg-near-black px-4 py-3 md:px-6">
+    <div
+      id="viewer-thumbnails"
+      class="flex gap-3 overflow-x-auto pb-1 scrollbar-thin"
+    >
+    </div>
+  </footer>
+</div>
+
+<style>
+  .scrollbar-thin::-webkit-scrollbar {
+    height: 4px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgba(197, 160, 89, 0.5);
+    border-radius: 4px;
+  }
+</style>
+
+<script>
+  const clients = window.__CLIENTS__ || [];
+
+  /** @type {any} */
+  let viewer = null;
+  let activeClient = null;
+  let activeIndex = 0;
+
+  const modal = document.getElementById('panorama-modal');
+  const viewerContainer = document.getElementById('panorama-viewer');
+  const titleEl = document.getElementById('viewer-title');
+  const counterEl = document.getElementById('viewer-counter');
+  const thumbnailsEl = document.getElementById('viewer-thumbnails');
+  const prevBtn = document.getElementById('viewer-prev');
+  const nextBtn = document.getElementById('viewer-next');
+  const closeBtn = document.getElementById('viewer-close');
+  const fullscreenBtn = document.getElementById('viewer-fullscreen');
+
+  if (!modal || !viewerContainer || !titleEl || !counterEl || !thumbnailsEl) {
+    console.error('Visualizador 360°: elementos do DOM não encontrados.');
+  } else {
+    function open(clientId) {
+      activeClient = clients.find((c) => c.id === clientId);
+      if (!activeClient) return;
+
+      activeIndex = 0;
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+
+      renderThumbnails();
+      loadPanorama();
+    }
+
+    function close() {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.style.overflow = '';
+      if (viewer) {
+        viewer.destroy();
+        viewer = null;
+      }
+    }
+
+    function loadPanorama() {
+      if (!activeClient) return;
+
+      if (viewer) {
+        viewer.destroy();
+        viewer = null;
+      }
+
+      const photo = activeClient.photos[activeIndex];
+      titleEl.textContent = activeClient.name;
+      counterEl.textContent = `${activeIndex + 1} / ${activeClient.photos.length}`;
+      updateThumbnailsActive();
+
+      if (typeof window.pannellum !== 'undefined') {
+        viewer = window.pannellum.viewer('panorama-viewer', {
+          type: 'equirectangular',
+          panorama: photo,
+          autoLoad: true,
+          showControls: true,
+          compass: false,
+          preview: photo,
+        });
+      } else {
+        viewerContainer.innerHTML = `
+          <div class="flex h-full w-full flex-col items-center justify-center gap-4 px-6 text-center text-cream-muted">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <p class="font-medium">Visualizador 360° ainda carregando.<br>Tente fechar e abrir novamente.</p>
+          </div>
+        `;
+      }
+    }
+
+    function next() {
+      if (!activeClient) return;
+      activeIndex = (activeIndex + 1) % activeClient.photos.length;
+      loadPanorama();
+    }
+
+    function prev() {
+      if (!activeClient) return;
+      activeIndex =
+        (activeIndex - 1 + activeClient.photos.length) %
+        activeClient.photos.length;
+      loadPanorama();
+    }
+
+    function renderThumbnails() {
+      if (!activeClient) return;
+      thumbnailsEl.innerHTML = activeClient.photos
+        .map(
+          (photo, idx) => `
+            <button
+              type="button"
+              data-thumb-index="${idx}"
+              class="thumb-btn group relative h-14 w-20 flex-shrink-0 overflow-hidden rounded-lg border-2 border-transparent transition-all hover:border-gold/50 md:h-16 md:w-24"
+              aria-label="Ver foto ${idx + 1}"
+            >
+                <img
+                  src="${photo}"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  class="h-full w-full object-cover opacity-60 transition-opacity group-hover:opacity-100"
+                />
+            </button>
+          `
+        )
+        .join('');
+    }
+
+    function updateThumbnailsActive() {
+      const thumbs = thumbnailsEl.querySelectorAll('.thumb-btn');
+      thumbs.forEach((btn, idx) => {
+        if (idx === activeIndex) {
+          btn.classList.add('border-gold', 'opacity-100');
+          btn.classList.remove('border-transparent');
+          btn.querySelector('img').classList.add('opacity-100');
+          btn.querySelector('img').classList.remove('opacity-60');
+          btn.scrollIntoView({ inline: 'center', behavior: 'smooth', block: 'nearest' });
+        } else {
+          btn.classList.remove('border-gold', 'opacity-100');
+          btn.classList.add('border-transparent');
+          const img = btn.querySelector('img');
+          if (img) {
+            img.classList.remove('opacity-100');
+            img.classList.add('opacity-60');
+          }
+        }
+      });
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        modal.requestFullscreen?.().catch(() => {});
+      } else {
+        document.exitFullscreen?.().catch(() => {});
+      }
+    }
+
+    // Event delegation for thumbnail clicks
+    thumbnailsEl.addEventListener('click', (e) => {
+      const btn = e.target.closest('.thumb-btn');
+      if (!btn) return;
+      const idx = Number(btn.dataset.thumbIndex);
+      if (!Number.isNaN(idx)) {
+        activeIndex = idx;
+        loadPanorama();
+      }
+    });
+
+    // Card open buttons
+    document.querySelectorAll('[data-open-viewer]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const clientId = btn.getAttribute('data-open-viewer');
+        if (clientId) open(clientId);
+      });
+    });
+
+    prevBtn?.addEventListener('click', prev);
+    nextBtn?.addEventListener('click', next);
+    closeBtn?.addEventListener('click', close);
+    fullscreenBtn?.addEventListener('click', toggleFullscreen);
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (modal.classList.contains('hidden')) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') prev();
+      if (e.key === 'ArrowRight') next();
+    });
+
+    // Swipe navigation on touch devices (detected on side tap zones, not on the viewer itself)
+    let touchStartX = 0;
+    modal.addEventListener(
+      'touchstart',
+      (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      },
+      { passive: true }
+    );
+    modal.addEventListener(
+      'touchend',
+      (e) => {
+        const touchEndX = e.changedTouches[0].screenX;
+        const delta = touchEndX - touchStartX;
+        const width = window.innerWidth;
+        // Só navega se o toque inicial foi nas bordas laterais (fora da área central do Pannellum)
+        if (touchStartX < width * 0.15 || touchStartX > width * 0.85) {
+          if (delta < -40) next();
+          if (delta > 40) prev();
+        }
+      },
+      { passive: true }
+    );
+
+    // Fechar ao clicar fora do conteúdo (apenas no backdrop preto do modal)
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) close();
+    });
+  }
+</script>
