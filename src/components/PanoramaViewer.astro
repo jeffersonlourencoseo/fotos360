@@ -213,7 +213,14 @@
           autoLoad: true,
           showControls: true,
           compass: false,
-          preview: photo,
+          preview: thumbPath(photo),
+          // Especifica um tamanho de textura seguro para mobile
+          haov: 360,
+          vaov: 180,
+          vOffset: 0,
+          minHfov: 50,
+          maxHfov: 120,
+          hfov: 100,
         });
       } else {
         viewerContainer.innerHTML = `
@@ -243,6 +250,15 @@
       loadPanorama();
     }
 
+    function thumbPath(photo) {
+      // /panoramas/maneros/01.jpg → /panoramas/maneros/thumbs/01.jpg
+      return photo.replace(/\.jpg$/, '.jpg').replace(/\/([^/]+)\/(\d+)\.jpg$/, '/$1/thumbs/$2.jpg');
+    }
+
+    function thumbWebpPath(photo) {
+      return thumbPath(photo).replace(/\.jpg$/, '.webp');
+    }
+
     function renderThumbnails() {
       if (!activeClient) return;
       thumbnailsEl.innerHTML = activeClient.photos
@@ -254,13 +270,18 @@
               class="thumb-btn group relative h-14 w-20 flex-shrink-0 overflow-hidden rounded-lg border-2 border-transparent transition-all hover:border-gold/50 md:h-16 md:w-24"
               aria-label="Ver foto ${idx + 1}"
             >
-                <img
-                  src="${photo}"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                  class="h-full w-full object-cover opacity-60 transition-opacity group-hover:opacity-100"
-                />
+                <picture class="contents">
+                  <source srcset="${thumbWebpPath(photo)}" type="image/webp" />
+                  <img
+                    src="${thumbPath(photo)}"
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    width="120"
+                    height="80"
+                    class="h-full w-full object-cover opacity-60 transition-opacity group-hover:opacity-100"
+                  />
+                </picture>
             </button>
           `
         )

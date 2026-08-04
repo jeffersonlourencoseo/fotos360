@@ -1,9 +1,14 @@
+/**
+ * Para adicionar um novo cliente, basta replicar o padrão abaixo.
+ * As fotos devem estar em /public/panoramas/[id]/ e as miniaturas
+ * otimizadas em /public/panoramas/[id]/thumbs/ (mesmo nome, .webp e .jpg).
+ */
 export const clients = [
   {
     id: "maneros",
     name: "Manero's",
     category: "Restaurante",
-    thumbnail: "/panoramas/maneros/01.jpg",
+    thumbnail: "/panoramas/maneros/thumbs/01",
     photos: [
       "/panoramas/maneros/01.jpg",
       "/panoramas/maneros/02.jpg",
@@ -16,7 +21,7 @@ export const clients = [
     id: "delicia-do-iraja",
     name: "Delícia do Irajá",
     category: "Restaurante",
-    thumbnail: "/panoramas/delicia-do-iraja/01.jpg",
+    thumbnail: "/panoramas/delicia-do-iraja/thumbs/01",
     photos: [
       "/panoramas/delicia-do-iraja/01.jpg",
       "/panoramas/delicia-do-iraja/02.jpg",
@@ -28,7 +33,7 @@ export const clients = [
     id: "los-hermanos",
     name: "Barbearia Los Hermanos",
     category: "Barbearia",
-    thumbnail: "/panoramas/los-hermanos/01.jpg",
+    thumbnail: "/panoramas/los-hermanos/thumbs/01",
     photos: [
       "/panoramas/los-hermanos/01.jpg",
       "/panoramas/los-hermanos/02.jpg",

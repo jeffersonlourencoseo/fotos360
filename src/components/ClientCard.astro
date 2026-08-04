@@ -1,19 +1,26 @@
 ---
 const { client } = Astro.props;
 const count = client.photos.length;
+const thumbWebp = `${client.thumbnail}.webp`;
+const thumbJpg = `${client.thumbnail}.jpg`;
 ---
 
 <article
   class="group relative overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] transition-all duration-300 hover:border-gold/50 hover:bg-white/[0.06] hover:shadow-[0_0_40px_-12px_rgba(197,160,89,0.25)]"
 >
   <div class="relative aspect-[4/3] overflow-hidden">
-    <img
-      src={client.thumbnail}
-      alt={`Foto 360° de ${client.name}`}
-      loading="lazy"
-      decoding="async"
-      class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-    />
+    <picture>
+      <source srcset={thumbWebp} type="image/webp" />
+      <img
+        src={thumbJpg}
+        alt={`Foto 360° de ${client.name}`}
+        loading="lazy"
+        decoding="async"
+        width="600"
+        height="450"
+        class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+      />
+    </picture>
     <div class="absolute inset-0 bg-gradient-to-t from-near-black via-near-black/40 to-transparent"></div>
 
     <div class="absolute bottom-0 left-0 right-0 p-5">
