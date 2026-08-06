@@ -1,0 +1,93 @@
+---
+const noticeText =
+  "Lembre-se: as fotos 360º ficam no perfil do cliente no Google, ajudando quem pesquisa pelo estabelecimento a conhecer os ambientes antes de visitar.";
+const storageKey = "tmjl-notice-dismissed";
+---
+
+<div
+  id="notice-modal"
+  class="fixed inset-0 z-[60] hidden items-center justify-center bg-near-black/80 px-4 backdrop-blur-sm"
+  aria-modal="true"
+  role="dialog"
+  aria-label="Aviso importante"
+>
+  <div
+    class="w-full max-w-md rounded-2xl border border-gold/30 bg-[#111] p-6 shadow-[0_0_60px_-20px_rgba(197,160,89,0.35)] md:p-8"
+  >
+    <div class="mb-5 flex items-start gap-4">
+      <div
+        class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border border-gold/40 bg-gold/10 text-gold"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 16v-4"></path>
+          <path d="M12 8h.01"></path>
+        </svg>
+      </div>
+      <div>
+        <h3 class="font-serif text-lg font-semibold text-cream md:text-xl">
+          Informação importante
+        </h3>
+        <p class="mt-2 text-sm leading-relaxed text-cream-muted md:text-base">
+          {noticeText}
+        </p>
+      </div>
+    </div>
+
+    <button
+      id="notice-close"
+      type="button"
+      class="w-full rounded-full border border-gold bg-gold px-6 py-3 text-sm font-semibold uppercase tracking-wider text-near-black transition-colors hover:bg-gold-light"
+    >
+      Entendi
+    </button>
+  </div>
+</div>
+
+<script define:vars={{ storageKey }}>
+  (function () {
+    const modal = document.getElementById('notice-modal');
+    const closeBtn = document.getElementById('notice-close');
+    if (!modal || !closeBtn) return;
+
+    let dismissed = false;
+    try {
+      dismissed = window.localStorage.getItem(storageKey) === 'true';
+    } catch {
+      // Modo privado ou storage bloqueado: mostra o aviso normalmente.
+    }
+
+    if (dismissed) return;
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+
+    function close() {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      try {
+        window.localStorage.setItem(storageKey, 'true');
+      } catch {
+        // Ignora erro de storage.
+      }
+    }
+
+    closeBtn.addEventListener('click', close);
+
+    // Fecha ao clicar no fundo, mas não no card.
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) close();
+    });
+  })();
+</script>
