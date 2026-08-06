@@ -41,4 +41,16 @@ export const clients = [
       "/panoramas/los-hermanos/04.jpg",
     ],
   },
+  {
+    id: "barbearia-patrick-menezes",
+    name: "Barbearia Patrick Menezes",
+    category: "Barbearia",
+    thumbnail: "/panoramas/barbearia-patrick-menezes/thumbs/01",
+    photos: [
+      "/panoramas/barbearia-patrick-menezes/01.jpg",
+      "/panoramas/barbearia-patrick-menezes/02.jpg",
+      "/panoramas/barbearia-patrick-menezes/03.jpg",
+      "/panoramas/barbearia-patrick-menezes/04.jpg",
+    ],
+  },
 ];
