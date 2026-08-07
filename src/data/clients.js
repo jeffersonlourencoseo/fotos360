@@ -54,6 +54,18 @@ export const clients = [
     ],
   },
   {
+    id: "barbearia-di-souza",
+    name: "Barbearia Di Souza",
+    category: "Barbearia",
+    thumbnail: "/panoramas/barbearia-di-souza/thumbs/01",
+    photos: [
+      "/panoramas/barbearia-di-souza/01.jpg",
+      "/panoramas/barbearia-di-souza/02.jpg",
+      "/panoramas/barbearia-di-souza/03.jpg",
+      "/panoramas/barbearia-di-souza/04.jpg",
+    ],
+  },
+  {
     id: "academia-professor-silva-ribeiro",
     name: "Academia Professor Silva Ribeiro",
     category: "Academia",
