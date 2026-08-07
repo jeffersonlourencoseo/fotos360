@@ -100,4 +100,33 @@ export const clients = [
     thumbnail: "/panoramas/escola-tia-laura/thumbs/01",
     photos: ["/panoramas/escola-tia-laura/01.jpg"],
   },
+  {
+    id: "loja-apimentada",
+    name: "Apimentada Fashion",
+    category: "Loja",
+    thumbnail: "/panoramas/loja-apimentada/thumbs/01",
+    photos: [
+      "/panoramas/loja-apimentada/01.jpg",
+      "/panoramas/loja-apimentada/02.jpg",
+      "/panoramas/loja-apimentada/03.jpg",
+      "/panoramas/loja-apimentada/04.jpg",
+      "/panoramas/loja-apimentada/05.jpg",
+      "/panoramas/loja-apimentada/06.jpg",
+      "/panoramas/loja-apimentada/07.jpg",
+    ],
+  },
+  {
+    id: "restaurante-seu-bicao",
+    name: "Seu Restaurante Bicão",
+    category: "Restaurante",
+    thumbnail: "/panoramas/restaurante-seu-bicao/thumbs/01",
+    photos: [
+      "/panoramas/restaurante-seu-bicao/01.jpg",
+      "/panoramas/restaurante-seu-bicao/02.jpg",
+      "/panoramas/restaurante-seu-bicao/03.jpg",
+      "/panoramas/restaurante-seu-bicao/04.jpg",
+      "/panoramas/restaurante-seu-bicao/05.jpg",
+      "/panoramas/restaurante-seu-bicao/06.jpg",
+    ],
+  },
 ];
