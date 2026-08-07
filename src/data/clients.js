@@ -5,6 +5,47 @@
  */
 export const clients = [
   {
+    id: "los-hermanos",
+    name: "Barbearia Los Hermanos",
+    category: "Barbearia",
+    thumbnail: "/panoramas/los-hermanos/thumbs/01",
+    photos: [
+      "/panoramas/los-hermanos/01.jpg",
+      "/panoramas/los-hermanos/02.jpg",
+      "/panoramas/los-hermanos/03.jpg",
+      "/panoramas/los-hermanos/04.jpg",
+    ],
+  },
+  {
+    id: "restaurante-seu-bicao",
+    name: "Seu Restaurante Bicão",
+    category: "Restaurante",
+    thumbnail: "/panoramas/restaurante-seu-bicao/thumbs/01",
+    photos: [
+      "/panoramas/restaurante-seu-bicao/01.jpg",
+      "/panoramas/restaurante-seu-bicao/02.jpg",
+      "/panoramas/restaurante-seu-bicao/03.jpg",
+      "/panoramas/restaurante-seu-bicao/04.jpg",
+      "/panoramas/restaurante-seu-bicao/05.jpg",
+      "/panoramas/restaurante-seu-bicao/06.jpg",
+    ],
+  },
+  {
+    id: "loja-apimentada",
+    name: "Apimentada Fashion",
+    category: "Loja",
+    thumbnail: "/panoramas/loja-apimentada/thumbs/01",
+    photos: [
+      "/panoramas/loja-apimentada/01.jpg",
+      "/panoramas/loja-apimentada/02.jpg",
+      "/panoramas/loja-apimentada/03.jpg",
+      "/panoramas/loja-apimentada/04.jpg",
+      "/panoramas/loja-apimentada/05.jpg",
+      "/panoramas/loja-apimentada/06.jpg",
+      "/panoramas/loja-apimentada/07.jpg",
+    ],
+  },
+  {
     id: "maneros",
     name: "Manero's",
     category: "Restaurante",
@@ -27,18 +68,6 @@ export const clients = [
       "/panoramas/delicia-do-iraja/02.jpg",
       "/panoramas/delicia-do-iraja/03.jpg",
       "/panoramas/delicia-do-iraja/04.jpg",
-    ],
-  },
-  {
-    id: "los-hermanos",
-    name: "Barbearia Los Hermanos",
-    category: "Barbearia",
-    thumbnail: "/panoramas/los-hermanos/thumbs/01",
-    photos: [
-      "/panoramas/los-hermanos/01.jpg",
-      "/panoramas/los-hermanos/02.jpg",
-      "/panoramas/los-hermanos/03.jpg",
-      "/panoramas/los-hermanos/04.jpg",
     ],
   },
   {
@@ -99,34 +128,5 @@ export const clients = [
     category: "Escola",
     thumbnail: "/panoramas/escola-tia-laura/thumbs/01",
     photos: ["/panoramas/escola-tia-laura/01.jpg"],
-  },
-  {
-    id: "loja-apimentada",
-    name: "Apimentada Fashion",
-    category: "Loja",
-    thumbnail: "/panoramas/loja-apimentada/thumbs/01",
-    photos: [
-      "/panoramas/loja-apimentada/01.jpg",
-      "/panoramas/loja-apimentada/02.jpg",
-      "/panoramas/loja-apimentada/03.jpg",
-      "/panoramas/loja-apimentada/04.jpg",
-      "/panoramas/loja-apimentada/05.jpg",
-      "/panoramas/loja-apimentada/06.jpg",
-      "/panoramas/loja-apimentada/07.jpg",
-    ],
-  },
-  {
-    id: "restaurante-seu-bicao",
-    name: "Seu Restaurante Bicão",
-    category: "Restaurante",
-    thumbnail: "/panoramas/restaurante-seu-bicao/thumbs/01",
-    photos: [
-      "/panoramas/restaurante-seu-bicao/01.jpg",
-      "/panoramas/restaurante-seu-bicao/02.jpg",
-      "/panoramas/restaurante-seu-bicao/03.jpg",
-      "/panoramas/restaurante-seu-bicao/04.jpg",
-      "/panoramas/restaurante-seu-bicao/05.jpg",
-      "/panoramas/restaurante-seu-bicao/06.jpg",
-    ],
   },
 ];
