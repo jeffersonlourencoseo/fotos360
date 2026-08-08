@@ -1,0 +1,144 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Tour 360° Teste | Gentlemens Barber Beer">
+  <main class="min-h-screen flex flex-col bg-[#0a0a0a]">
+    <!-- Header -->
+    <header class="px-6 py-5 border-b border-[#2a2a2a]">
+      <div class="max-w-6xl mx-auto flex items-center justify-between">
+        <div>
+          <p class="text-xs uppercase tracking-[0.2em] text-[#c9a227]">Teste de tour virtual</p>
+          <h1 class="text-2xl md:text-3xl font-serif font-semibold text-[#f4f1ea]">
+            Gentlemens Barber Beer
+          </h1>
+        </div>
+        <a
+          href="/"
+          class="text-sm px-4 py-2 rounded border border-[#c9a227] text-[#c9a227] hover:bg-[#c9a227] hover:text-[#0a0a0a] transition-colors"
+        >
+          Voltar ao portfólio
+        </a>
+      </div>
+    </header>
+
+    <!-- Viewer -->
+    <div class="flex-1 relative">
+      <div id="panorama" class="w-full h-[70vh] md:h-[80vh]"></div>
+
+      <!-- Overlay hint -->
+      <div
+        id="tour-hint"
+        class="absolute top-4 left-1/2 -translate-x-1/2 z-10 px-4 py-2 rounded-full bg-black/70 text-xs md:text-sm text-[#f4f1ea] backdrop-blur-sm pointer-events-none"
+      >
+        Clique nas setas para navegar entre os ambientes
+      </div>
+    </div>
+
+    <!-- Scene thumbnails -->
+    <div class="border-t border-[#2a2a2a] bg-[#111]">
+      <div class="max-w-6xl mx-auto px-6 py-4">
+        <p class="text-xs uppercase tracking-wider text-[#888] mb-3">Navegação rápida</p>
+        <div class="flex gap-3 overflow-x-auto pb-2" id="scene-buttons">
+          <!-- Botões gerados pelo JS -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const basePath = "/panoramas/gentlemens-barber-beer";
+
+    // Cenas do tour — uma para cada foto do cliente.
+    // Os hotspots yaw/pitch são posições visuais aproximadas para demonstrar a navegação.
+    const scenes = {
+      entrada: {
+        title: "Entrada",
+        panorama: `${basePath}/01.jpg`,
+        yaw: 0,
+        pitch: -3,
+        hotSpots: [
+          { yaw: 25, pitch: -5, type: "scene", text: "Avançar", sceneId: "recepção", targetYaw: 180, targetPitch: -3 },
+        ],
+      },
+      recepção: {
+        title: "Recepção",
+        panorama: `${basePath}/02.jpg`,
+        yaw: 180,
+        pitch: -3,
+        hotSpots: [
+          { yaw: -160, pitch: -5, type: "scene", text: "Voltar", sceneId: "entrada", targetYaw: 0, targetPitch: -3 },
+          { yaw: 20, pitch: -5, type: "scene", text: "Avançar", sceneId: "barbearia", targetYaw: 90, targetPitch: -3 },
+        ],
+      },
+      barbearia: {
+        title: "Área de Corte",
+        panorama: `${basePath}/03.jpg`,
+        yaw: 90,
+        pitch: -3,
+        hotSpots: [
+          { yaw: -90, pitch: -5, type: "scene", text: "Voltar", sceneId: "recepção", targetYaw: 180, targetPitch: -3 },
+          { yaw: 90, pitch: -5, type: "scene", text: "Avançar", sceneId: "espera", targetYaw: -90, targetPitch: -3 },
+        ],
+      },
+      espera: {
+        title: "Lounge / Espera",
+        panorama: `${basePath}/04.jpg`,
+        yaw: -90,
+        pitch: -3,
+        hotSpots: [
+          { yaw: 90, pitch: -5, type: "scene", text: "Voltar", sceneId: "barbearia", targetYaw: 90, targetPitch: -3 },
+          { yaw: -90, pitch: -5, type: "scene", text: "Avançar", sceneId: "bar", targetYaw: 0, targetPitch: -3 },
+        ],
+      },
+      bar: {
+        title: "Bar",
+        panorama: `${basePath}/05.jpg`,
+        yaw: 0,
+        pitch: -3,
+        hotSpots: [
+          { yaw: 180, pitch: -5, type: "scene", text: "Voltar", sceneId: "espera", targetYaw: -90, targetPitch: -3 },
+        ],
+      },
+    };
+
+    // Aguarda o Pannellum carregar (CDN defer)
+    function initTour() {
+      if (typeof window.pannellum === "undefined") {
+        setTimeout(initTour, 100);
+        return;
+      }
+
+      const tour = window.pannellum.viewer("panorama", {
+        default: {
+          firstScene: "entrada",
+          sceneFadeDuration: 1000,
+          autoLoad: true,
+          compass: true,
+          northOffset: 0,
+        },
+        scenes,
+      });
+
+      // Gera botões de navegação rápida
+      const buttonsContainer = document.getElementById("scene-buttons");
+      Object.keys(scenes).forEach((sceneId) => {
+        const scene = scenes[sceneId];
+        const btn = document.createElement("button");
+        btn.className =
+          "flex-shrink-0 px-4 py-2 rounded bg-[#1f1f1f] text-sm text-[#f4f1ea] border border-[#333] hover:border-[#c9a227] hover:text-[#c9a227] transition-colors whitespace-nowrap";
+        btn.textContent = scene.title;
+        btn.addEventListener("click", () => tour.loadScene(sceneId));
+        buttonsContainer.appendChild(btn);
+      });
+
+      // Esconde a dica após o primeiro clique em qualquer hotspot
+      tour.on("scenechange", () => {
+        const hint = document.getElementById("tour-hint");
+        if (hint) hint.style.opacity = "0";
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", initTour);
+  </script>
+</Layout>
