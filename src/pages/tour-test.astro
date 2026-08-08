@@ -15,47 +15,34 @@ import Layout from "../layouts/Layout.astro";
     is:inline></script>
 
   <style is:inline>
-    /* Hotspot maior, dourado e com animação de pulsar */
-    .custom-hotspot {
-      width: 64px !important;
-      height: 64px !important;
-      margin-left: -32px !important;
-      margin-top: -32px !important;
-      background: rgba(201, 162, 39, 0.85) !important;
-      border: 3px solid #fff !important;
-      border-radius: 50% !important;
-      box-shadow: 0 0 20px rgba(201, 162, 39, 0.6) !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
+    /* Seta clean estilo Street View: branca, discreta, com sombra suave */
+    .street-arrow {
+      width: 34px !important;
+      height: 34px !important;
+      margin-left: -17px !important;
+      margin-top: -17px !important;
+      background: transparent !important;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 4l-8 16h16l-8-16z'/%3E%3C/svg%3E") !important;
+      background-size: contain !important;
+      background-repeat: no-repeat !important;
+      background-position: center !important;
+      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.6));
       cursor: pointer !important;
-      animation: pulse 2s infinite;
-      transition: transform 0.2s, background 0.2s;
+      opacity: 0.9;
+      transition: opacity 0.2s, transform 0.2s;
     }
-    .custom-hotspot:hover {
-      transform: scale(1.15);
-      background: #e6bc3b !important;
-    }
-    .custom-hotspot::before {
-      content: "";
-      width: 0;
-      height: 0;
-      border-left: 14px solid transparent;
-      border-right: 14px solid transparent;
-      border-bottom: 22px solid #0a0a0a;
-      transform: rotate(90deg);
-    }
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(201, 162, 39, 0.7); }
-      70% { box-shadow: 0 0 0 20px rgba(201, 162, 39, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(201, 162, 39, 0); }
+    .street-arrow:hover {
+      opacity: 1;
+      transform: scale(1.1);
     }
     .pnlm-tooltip {
-      background: rgba(0,0,0,0.8) !important;
-      color: #f4f1ea !important;
-      padding: 6px 10px !important;
+      background: rgba(0,0,0,0.75) !important;
+      color: #fff !important;
+      padding: 5px 9px !important;
       border-radius: 4px !important;
-      font-size: 13px !important;
+      font-size: 12px !important;
+      font-family: sans-serif !important;
+      white-space: nowrap !important;
     }
   </style>
 
@@ -152,7 +139,7 @@ import Layout from "../layouts/Layout.astro";
         minHfov: 50,
         maxHfov: 120,
         hotSpots: [
-          { yaw: 1.7, pitch: 7, type: "scene", cssClass: "custom-hotspot", text: "Lounge", sceneId: "lounge", targetYaw: 2, targetPitch: -9.8 },
+          { yaw: 1.7, pitch: 7, type: "scene", cssClass: "street-arrow", text: "Lounge", sceneId: "lounge", targetYaw: 2, targetPitch: -9.8 },
         ],
       },
       lounge: {
@@ -165,8 +152,8 @@ import Layout from "../layouts/Layout.astro";
         minHfov: 50,
         maxHfov: 120,
         hotSpots: [
-          { yaw: 172.6, pitch: -9.8, type: "scene", cssClass: "custom-hotspot", text: "Fachada", sceneId: "fachada", targetYaw: -7, targetPitch: 0 },
-          { yaw: -0.1, pitch: -0.5, type: "scene", cssClass: "custom-hotspot", text: "Área de Corte 1", sceneId: "area-de-corte-1", targetYaw: -4.4, targetPitch: -5.2 },
+          { yaw: 172.6, pitch: -9.8, type: "scene", cssClass: "street-arrow", text: "Fachada", sceneId: "fachada", targetYaw: -7, targetPitch: 0 },
+          { yaw: -0.1, pitch: -0.5, type: "scene", cssClass: "street-arrow", text: "Área de Corte 1", sceneId: "area-de-corte-1", targetYaw: -4.4, targetPitch: -5.2 },
         ],
       },
       "area-de-corte-1": {
@@ -179,8 +166,8 @@ import Layout from "../layouts/Layout.astro";
         minHfov: 50,
         maxHfov: 120,
         hotSpots: [
-          { yaw: 169.3, pitch: -9.5, type: "scene", cssClass: "custom-hotspot", text: "Lounge", sceneId: "lounge", targetYaw: -0.1, targetPitch: -0.5 },
-          { yaw: -4.4, pitch: -5.2, type: "scene", cssClass: "custom-hotspot", text: "Área de Corte 2", sceneId: "area-de-corte-2", targetYaw: -2.1, targetPitch: -5.1 },
+          { yaw: 169.3, pitch: -9.5, type: "scene", cssClass: "street-arrow", text: "Lounge", sceneId: "lounge", targetYaw: -0.1, targetPitch: -0.5 },
+          { yaw: -4.4, pitch: -5.2, type: "scene", cssClass: "street-arrow", text: "Área de Corte 2", sceneId: "area-de-corte-2", targetYaw: -2.1, targetPitch: -5.1 },
         ],
       },
       "area-de-corte-2": {
@@ -193,8 +180,8 @@ import Layout from "../layouts/Layout.astro";
         minHfov: 50,
         maxHfov: 120,
         hotSpots: [
-          { yaw: -2.1, pitch: -5.1, type: "scene", cssClass: "custom-hotspot", text: "Área de Corte 1", sceneId: "area-de-corte-1", targetYaw: 169.3, targetPitch: -9.5 },
-          { yaw: -174, pitch: -5.7, type: "scene", cssClass: "custom-hotspot", text: "Área de Corte 3", sceneId: "area-de-corte-3", targetYaw: 2.4, targetPitch: -5 },
+          { yaw: -2.1, pitch: -5.1, type: "scene", cssClass: "street-arrow", text: "Área de Corte 1", sceneId: "area-de-corte-1", targetYaw: 169.3, targetPitch: -9.5 },
+          { yaw: -174, pitch: -5.7, type: "scene", cssClass: "street-arrow", text: "Área de Corte 3", sceneId: "area-de-corte-3", targetYaw: 2.4, targetPitch: -5 },
         ],
       },
       "area-de-corte-3": {
@@ -207,7 +194,7 @@ import Layout from "../layouts/Layout.astro";
         minHfov: 50,
         maxHfov: 120,
         hotSpots: [
-          { yaw: 2.4, pitch: -5, type: "scene", cssClass: "custom-hotspot", text: "Área de Corte 2", sceneId: "area-de-corte-2", targetYaw: -174, targetPitch: -5.7 },
+          { yaw: 2.4, pitch: -5, type: "scene", cssClass: "street-arrow", text: "Área de Corte 2", sceneId: "area-de-corte-2", targetYaw: -174, targetPitch: -5.7 },
         ],
       },
     };
