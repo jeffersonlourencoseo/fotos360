@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tour Puro - Teste Pannellum</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css" crossorigin="anonymous" />
+  <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js" crossorigin="anonymous"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: sans-serif; background: #111; color: #fff; }
+    #wrap { max-width: 1000px; margin: 20px auto; padding: 10px; }
+    #viewer { width: 100%; height: 500px; border: 4px solid #c9a227; background: #300; }
+    button { padding: 12px 20px; margin: 10px 5px 0 0; cursor: pointer; background: #c9a227; color: #000; border: none; border-radius: 4px; font-weight: bold; }
+    #log { margin-top: 10px; padding: 10px; background: #1a1a1a; font-family: monospace; font-size: 12px; white-space: pre-wrap; max-height: 200px; overflow-y: auto; }
+  </style>
+</head>
+<body>
+  <div id="wrap">
+    <h1>Tour Puro - Teste Pannellum</h1>
+    <p>Clique no botão abaixo para carregar a imagem 360°.</p>
+    <button id="btn-simples" type="button">Carregar foto 360° simples</button>
+    <button id="btn-tour" type="button">Carregar tour com setas</button>
+
+    <div id="viewer">
+      <p style="padding:20px;">Área do visualizador (fundo vermelho escuro). Se você não ver essa área, avise.</p>
+    </div>
+
+    <div id="log">Log:</div>
+  </div>
+
+  <script>
+    const logEl = document.getElementById('log');
+    function log(s) {
+      logEl.textContent += '\n' + (typeof s === 'string' ? s : JSON.stringify(s));
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    log('Pannellum presente? ' + (typeof window.pannellum !== 'undefined'));
+
+    document.getElementById('btn-simples').addEventListener('click', () => {
+      log('clique simples');
+      const viewer = document.getElementById('viewer');
+      viewer.innerHTML = '';
+      viewer.style.background = '#000';
+      try {
+        window.pannellum.viewer('viewer', {
+          type: 'equirectangular',
+          panorama: '/panoramas/gentlemens-barber-beer/01.jpg',
+          autoLoad: true,
+          title: 'Entrada',
+        });
+        log('viewer simples OK');
+      } catch (e) {
+        log('ERRO: ' + e.message);
+      }
+    });
+
+    document.getElementById('btn-tour').addEventListener('click', () => {
+      log('clique tour');
+      const viewer = document.getElementById('viewer');
+      viewer.innerHTML = '';
+      viewer.style.background = '#000';
+      try {
+        const tour = window.pannellum.viewer('viewer', {
+          default: { firstScene: 'entrada', sceneFadeDuration: 800, autoLoad: true },
+          scenes: {
+            entrada: {
+              title: 'Entrada',
+              type: 'equirectangular',
+              panorama: '/panoramas/gentlemens-barber-beer/01.jpg',
+              hotSpots: [
+                { yaw: 0, pitch: 0, type: 'scene', text: 'Avançar', sceneId: 'recepcao' }
+              ]
+            },
+            recepcao: {
+              title: 'Recepção',
+              type: 'equirectangular',
+              panorama: '/panoramas/gentlemens-barber-beer/02.jpg',
+              hotSpots: [
+                { yaw: 180, pitch: 0, type: 'scene', text: 'Voltar', sceneId: 'entrada' }
+              ]
+            }
+          }
+        });
+        tour.on('load', () => log('tour load OK'));
+        tour.on('error', (err) => log('tour erro: ' + (err.message || JSON.stringify(err))));
+        log('viewer tour OK');
+      } catch (e) {
+        log('ERRO: ' + e.message);
+      }
+    });
+  </script>
+</body>
+</html>
