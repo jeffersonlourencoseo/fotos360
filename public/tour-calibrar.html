@@ -55,11 +55,11 @@
     const destinoInput = document.getElementById('val-destino');
 
     const scenes = {
-      entrada: { title: 'Entrada', file: '01.jpg' },
-      recepcao: { title: 'Recepção', file: '02.jpg' },
-      corte: { title: 'Área de Corte', file: '03.jpg' },
-      espera: { title: 'Lounge/Espera', file: '04.jpg' },
-      bar: { title: 'Bar', file: '05.jpg' },
+      fachada: { title: 'Fachada', file: '01.jpg' },
+      lounge: { title: 'Lounge', file: '02.jpg' },
+      'area-de-corte-1': { title: 'Área de Corte 1', file: '03.jpg' },
+      'area-de-corte-2': { title: 'Área de Corte 2', file: '04.jpg' },
+      'area-de-corte-3': { title: 'Área de Corte 3', file: '05.jpg' },
     };
 
     let tour = null;
@@ -132,7 +132,7 @@
     });
 
     // Carrega a primeira cena automaticamente
-    window.addEventListener('load', () => loadScene('entrada'));
+    window.addEventListener('load', () => loadScene('fachada'));
   </script>
 </body>
 </html>

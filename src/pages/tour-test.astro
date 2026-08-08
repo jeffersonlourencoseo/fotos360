@@ -93,8 +93,8 @@ import Layout from "../layouts/Layout.astro";
     }
 
     const scenes = {
-      entrada: {
-        title: "Entrada",
+      fachada: {
+        title: "Fachada",
         type: "equirectangular",
         panorama: `${basePath}/01.jpg`,
         yaw: 0,
@@ -103,11 +103,11 @@ import Layout from "../layouts/Layout.astro";
         minHfov: 50,
         maxHfov: 120,
         hotSpots: [
-          { yaw: 0, pitch: 0, type: "scene", text: "Avançar →", sceneId: "recepcao", targetYaw: 180, targetPitch: 0 },
+          { yaw: 0, pitch: 0, type: "scene", text: "Avançar →", sceneId: "lounge", targetYaw: 180, targetPitch: 0 },
         ],
       },
-      recepcao: {
-        title: "Recepção",
+      lounge: {
+        title: "Lounge",
         type: "equirectangular",
         panorama: `${basePath}/02.jpg`,
         yaw: 180,
@@ -116,12 +116,12 @@ import Layout from "../layouts/Layout.astro";
         minHfov: 50,
         maxHfov: 120,
         hotSpots: [
-          { yaw: -180, pitch: 0, type: "scene", text: "← Voltar", sceneId: "entrada", targetYaw: 0, targetPitch: 0 },
-          { yaw: 0, pitch: 0, type: "scene", text: "Avançar →", sceneId: "barbearia", targetYaw: 90, targetPitch: 0 },
+          { yaw: -180, pitch: 0, type: "scene", text: "← Fachada", sceneId: "fachada", targetYaw: 0, targetPitch: 0 },
+          { yaw: 0, pitch: 0, type: "scene", text: "Avançar →", sceneId: "area-de-corte-1", targetYaw: 90, targetPitch: 0 },
         ],
       },
-      barbearia: {
-        title: "Área de Corte",
+      "area-de-corte-1": {
+        title: "Área de Corte 1",
         type: "equirectangular",
         panorama: `${basePath}/03.jpg`,
         yaw: 90,
@@ -130,12 +130,12 @@ import Layout from "../layouts/Layout.astro";
         minHfov: 50,
         maxHfov: 120,
         hotSpots: [
-          { yaw: -90, pitch: 0, type: "scene", text: "← Voltar", sceneId: "recepcao", targetYaw: 180, targetPitch: 0 },
-          { yaw: 90, pitch: 0, type: "scene", text: "Avançar →", sceneId: "espera", targetYaw: -90, targetPitch: 0 },
+          { yaw: -90, pitch: 0, type: "scene", text: "← Lounge", sceneId: "lounge", targetYaw: 180, targetPitch: 0 },
+          { yaw: 90, pitch: 0, type: "scene", text: "Avançar →", sceneId: "area-de-corte-2", targetYaw: -90, targetPitch: 0 },
         ],
       },
-      espera: {
-        title: "Lounge / Espera",
+      "area-de-corte-2": {
+        title: "Área de Corte 2",
         type: "equirectangular",
         panorama: `${basePath}/04.jpg`,
         yaw: -90,
@@ -144,12 +144,12 @@ import Layout from "../layouts/Layout.astro";
         minHfov: 50,
         maxHfov: 120,
         hotSpots: [
-          { yaw: 90, pitch: 0, type: "scene", text: "← Voltar", sceneId: "barbearia", targetYaw: 90, targetPitch: 0 },
-          { yaw: -90, pitch: 0, type: "scene", text: "Avançar →", sceneId: "bar", targetYaw: 0, targetPitch: 0 },
+          { yaw: 90, pitch: 0, type: "scene", text: "← Área de Corte 1", sceneId: "area-de-corte-1", targetYaw: 90, targetPitch: 0 },
+          { yaw: -90, pitch: 0, type: "scene", text: "Avançar →", sceneId: "area-de-corte-3", targetYaw: 0, targetPitch: 0 },
         ],
       },
-      bar: {
-        title: "Bar",
+      "area-de-corte-3": {
+        title: "Área de Corte 3",
         type: "equirectangular",
         panorama: `${basePath}/05.jpg`,
         yaw: 0,
@@ -158,7 +158,7 @@ import Layout from "../layouts/Layout.astro";
         minHfov: 50,
         maxHfov: 120,
         hotSpots: [
-          { yaw: 180, pitch: 0, type: "scene", text: "← Voltar", sceneId: "espera", targetYaw: -90, targetPitch: 0 },
+          { yaw: 180, pitch: 0, type: "scene", text: "← Área de Corte 2", sceneId: "area-de-corte-2", targetYaw: -90, targetPitch: 0 },
         ],
       },
     };
@@ -189,7 +189,7 @@ import Layout from "../layouts/Layout.astro";
       try {
         tour = window.pannellum.viewer("panorama", {
           default: {
-            firstScene: "entrada",
+            firstScene: "fachada",
             sceneFadeDuration: 800,
             autoLoad: true,
             compass: false,
