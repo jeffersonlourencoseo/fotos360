@@ -3,7 +3,7 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout title="Tour 360° Teste | Gentlemens Barber Beer">
-  <!-- Carrega Pannellum de forma síncrona nesta página para evitar race condition com o defer do layout -->
+  <!-- Carrega Pannellum de forma síncrona nesta página -->
   <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"
@@ -34,12 +34,21 @@ import Layout from "../layouts/Layout.astro";
     </header>
 
     <!-- Viewer -->
-    <div class="flex-1 relative">
+    <div class="flex-1 relative min-h-[500px] md:min-h-[700px]">
       <div
         id="panorama"
-        class="w-full h-[70vh] md:h-[80vh] flex items-center justify-center text-[#888]"
+        class="absolute inset-0 w-full h-full min-h-[500px] md:min-h-[700px] bg-red-900/40 flex items-center justify-center text-[#f4f1ea] text-center px-6"
       >
-        Carregando tour 360°...
+        <div id="start-screen" class="flex flex-col items-center gap-4">
+          <p class="text-lg">Clique para iniciar o tour 360°</p>
+          <button
+            id="start-btn"
+            type="button"
+            class="px-6 py-3 rounded bg-[#c9a227] text-[#0a0a0a] font-semibold hover:bg-[#e6bc3b] transition-colors"
+          >
+            Iniciar Tour
+          </button>
+        </div>
       </div>
 
       <!-- Overlay hint -->
@@ -47,18 +56,7 @@ import Layout from "../layouts/Layout.astro";
         id="tour-hint"
         class="absolute top-4 left-1/2 -translate-x-1/2 z-10 px-4 py-2 rounded-full bg-black/70 text-xs md:text-sm text-[#f4f1ea] backdrop-blur-sm pointer-events-none opacity-0 transition-opacity duration-500"
       >
-        Clique nas setas para navegar entre os ambientes
-      </div>
-    </div>
-
-    <!-- Debug panel -->
-    <div class="border-t border-[#2a2a2a] bg-[#111] px-6 py-3">
-      <div class="max-w-6xl mx-auto">
-        <p class="text-xs uppercase tracking-wider text-[#888] mb-2">Diagnóstico</p>
-        <pre
-          id="debug-output"
-          class="text-xs text-[#aaa] font-mono whitespace-pre-wrap break-all max-h-32 overflow-y-auto"
-        >Aguardando carregamento...</pre>
+        Arraste para olhar ao redor. Clique nas setas para andar pelo ambiente.
       </div>
     </div>
 
@@ -69,6 +67,17 @@ import Layout from "../layouts/Layout.astro";
         <div class="flex gap-3 overflow-x-auto pb-2" id="scene-buttons">
           <!-- Botões gerados pelo JS -->
         </div>
+      </div>
+    </div>
+
+    <!-- Debug panel -->
+    <div class="border-t border-[#2a2a2a] bg-[#0f0f0f] px-6 py-3">
+      <div class="max-w-6xl mx-auto">
+        <p class="text-xs uppercase tracking-wider text-[#888] mb-2">Diagnóstico</p>
+        <pre
+          id="debug-output"
+          class="text-xs text-[#aaa] font-mono whitespace-pre-wrap break-all max-h-40 overflow-y-auto"
+        >Aguardando...</pre>
       </div>
     </div>
   </main>
@@ -89,12 +98,12 @@ import Layout from "../layouts/Layout.astro";
         type: "equirectangular",
         panorama: `${basePath}/01.jpg`,
         yaw: 0,
-        pitch: -3,
+        pitch: 0,
         hfov: 100,
         minHfov: 50,
         maxHfov: 120,
         hotSpots: [
-          { yaw: 25, pitch: -5, type: "scene", text: "Avançar", sceneId: "recepcao", targetYaw: 180, targetPitch: -3 },
+          { yaw: 0, pitch: 0, type: "scene", text: "Avançar →", sceneId: "recepcao", targetYaw: 180, targetPitch: 0 },
         ],
       },
       recepcao: {
@@ -102,13 +111,13 @@ import Layout from "../layouts/Layout.astro";
         type: "equirectangular",
         panorama: `${basePath}/02.jpg`,
         yaw: 180,
-        pitch: -3,
+        pitch: 0,
         hfov: 100,
         minHfov: 50,
         maxHfov: 120,
         hotSpots: [
-          { yaw: -160, pitch: -5, type: "scene", text: "Voltar", sceneId: "entrada", targetYaw: 0, targetPitch: -3 },
-          { yaw: 20, pitch: -5, type: "scene", text: "Avançar", sceneId: "barbearia", targetYaw: 90, targetPitch: -3 },
+          { yaw: -180, pitch: 0, type: "scene", text: "← Voltar", sceneId: "entrada", targetYaw: 0, targetPitch: 0 },
+          { yaw: 0, pitch: 0, type: "scene", text: "Avançar →", sceneId: "barbearia", targetYaw: 90, targetPitch: 0 },
         ],
       },
       barbearia: {
@@ -116,13 +125,13 @@ import Layout from "../layouts/Layout.astro";
         type: "equirectangular",
         panorama: `${basePath}/03.jpg`,
         yaw: 90,
-        pitch: -3,
+        pitch: 0,
         hfov: 100,
         minHfov: 50,
         maxHfov: 120,
         hotSpots: [
-          { yaw: -90, pitch: -5, type: "scene", text: "Voltar", sceneId: "recepcao", targetYaw: 180, targetPitch: -3 },
-          { yaw: 90, pitch: -5, type: "scene", text: "Avançar", sceneId: "espera", targetYaw: -90, targetPitch: -3 },
+          { yaw: -90, pitch: 0, type: "scene", text: "← Voltar", sceneId: "recepcao", targetYaw: 180, targetPitch: 0 },
+          { yaw: 90, pitch: 0, type: "scene", text: "Avançar →", sceneId: "espera", targetYaw: -90, targetPitch: 0 },
         ],
       },
       espera: {
@@ -130,13 +139,13 @@ import Layout from "../layouts/Layout.astro";
         type: "equirectangular",
         panorama: `${basePath}/04.jpg`,
         yaw: -90,
-        pitch: -3,
+        pitch: 0,
         hfov: 100,
         minHfov: 50,
         maxHfov: 120,
         hotSpots: [
-          { yaw: 90, pitch: -5, type: "scene", text: "Voltar", sceneId: "barbearia", targetYaw: 90, targetPitch: -3 },
-          { yaw: -90, pitch: -5, type: "scene", text: "Avançar", sceneId: "bar", targetYaw: 0, targetPitch: -3 },
+          { yaw: 90, pitch: 0, type: "scene", text: "← Voltar", sceneId: "barbearia", targetYaw: 90, targetPitch: 0 },
+          { yaw: -90, pitch: 0, type: "scene", text: "Avançar →", sceneId: "bar", targetYaw: 0, targetPitch: 0 },
         ],
       },
       bar: {
@@ -144,12 +153,12 @@ import Layout from "../layouts/Layout.astro";
         type: "equirectangular",
         panorama: `${basePath}/05.jpg`,
         yaw: 0,
-        pitch: -3,
+        pitch: 0,
         hfov: 100,
         minHfov: 50,
         maxHfov: 120,
         hotSpots: [
-          { yaw: 180, pitch: -5, type: "scene", text: "Voltar", sceneId: "espera", targetYaw: -90, targetPitch: -3 },
+          { yaw: 180, pitch: 0, type: "scene", text: "← Voltar", sceneId: "espera", targetYaw: -90, targetPitch: 0 },
         ],
       },
     };
@@ -161,6 +170,7 @@ import Layout from "../layouts/Layout.astro";
 
     function initTour() {
       const container = document.getElementById("panorama");
+      const startScreen = document.getElementById("start-screen");
       log("Iniciando tour...");
 
       if (typeof window.pannellum === "undefined") {
@@ -168,8 +178,11 @@ import Layout from "../layouts/Layout.astro";
         log("window.pannellum está undefined");
         return;
       }
-      log("Pannellum carregado: " + typeof window.pannellum);
+      log("Pannellum carregado");
 
+      if (startScreen) startScreen.remove();
+      container.classList.remove("flex", "items-center", "justify-center", "text-[#f4f1ea]", "text-center", "px-6");
+      container.classList.add("bg-black");
       container.textContent = "";
 
       let tour;
@@ -177,17 +190,16 @@ import Layout from "../layouts/Layout.astro";
         tour = window.pannellum.viewer("panorama", {
           default: {
             firstScene: "entrada",
-            sceneFadeDuration: 1000,
+            sceneFadeDuration: 800,
             autoLoad: true,
-            compass: true,
-            northOffset: 0,
+            compass: false,
           },
           scenes,
         });
-        log("viewer criado com sucesso");
+        log("viewer criado");
       } catch (err) {
         container.textContent = "Erro ao criar o tour.";
-        log("ERRO ao criar viewer: " + err.message);
+        log("ERRO: " + err.message);
         console.error(err);
         return;
       }
@@ -200,32 +212,32 @@ import Layout from "../layouts/Layout.astro";
           "flex-shrink-0 px-4 py-2 rounded bg-[#1f1f1f] text-sm text-[#f4f1ea] border border-[#333] hover:border-[#c9a227] hover:text-[#c9a227] transition-colors whitespace-nowrap";
         btn.textContent = scene.title;
         btn.addEventListener("click", () => {
-          log("Clique em botão: " + sceneId);
+          log("botão: " + sceneId);
           tour.loadScene(sceneId);
         });
         buttonsContainer.appendChild(btn);
       });
 
       tour.on("load", () => {
-        log("Tour carregado (evento load)");
+        log("load OK");
         showHint();
       });
 
-      tour.on("scenechange", () => {
-        log("Cena alterada");
-        const hint = document.getElementById("tour-hint");
-        if (hint) hint.classList.add("opacity-0");
+      tour.on("error", (err) => {
+        log("ERRO tour: " + (err?.message || JSON.stringify(err)));
       });
 
-      tour.on("error", (err) => {
-        log("ERRO do tour: " + (err?.message || JSON.stringify(err)));
+      tour.on("scenechange", () => {
+        log("scenechange");
       });
     }
 
+    document.getElementById("start-btn")?.addEventListener("click", initTour);
+
     if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", initTour);
+      document.addEventListener("DOMContentLoaded", () => log("DOM pronto"));
     } else {
-      initTour();
+      log("DOM já pronto");
     }
   </script>
 </Layout>
