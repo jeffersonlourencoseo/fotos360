@@ -3,6 +3,16 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout title="Tour 360° Teste | Gentlemens Barber Beer">
+  <!-- Carrega Pannellum de forma síncrona nesta página para evitar race condition com o defer do layout -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"
+    crossorigin="anonymous"
+  />
+  <script
+    src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"
+    crossorigin="anonymous"
+    is:inline></script>
   <main class="min-h-screen flex flex-col bg-[#0a0a0a]">
     <!-- Header -->
     <header class="px-6 py-5 border-b border-[#2a2a2a]">
@@ -24,12 +34,14 @@ import Layout from "../layouts/Layout.astro";
 
     <!-- Viewer -->
     <div class="flex-1 relative">
-      <div id="panorama" class="w-full h-[70vh] md:h-[80vh]"></div>
+      <div id="panorama" class="w-full h-[70vh] md:h-[80vh] flex items-center justify-center text-[#888]">
+        Carregando tour 360°...
+      </div>
 
       <!-- Overlay hint -->
       <div
         id="tour-hint"
-        class="absolute top-4 left-1/2 -translate-x-1/2 z-10 px-4 py-2 rounded-full bg-black/70 text-xs md:text-sm text-[#f4f1ea] backdrop-blur-sm pointer-events-none"
+        class="absolute top-4 left-1/2 -translate-x-1/2 z-10 px-4 py-2 rounded-full bg-black/70 text-xs md:text-sm text-[#f4f1ea] backdrop-blur-sm pointer-events-none opacity-0 transition-opacity duration-500"
       >
         Clique nas setas para navegar entre os ambientes
       </div>
@@ -102,12 +114,20 @@ import Layout from "../layouts/Layout.astro";
       },
     };
 
-    // Aguarda o Pannellum carregar (CDN defer)
+    function showHint() {
+      const hint = document.getElementById("tour-hint");
+      if (hint) hint.classList.remove("opacity-0");
+    }
+
     function initTour() {
+      const container = document.getElementById("panorama");
+
       if (typeof window.pannellum === "undefined") {
-        setTimeout(initTour, 100);
+        container.textContent = "Erro ao carregar o visualizador 360°. Recarregue a página.";
         return;
       }
+
+      container.textContent = "";
 
       const tour = window.pannellum.viewer("panorama", {
         default: {
@@ -132,13 +152,16 @@ import Layout from "../layouts/Layout.astro";
         buttonsContainer.appendChild(btn);
       });
 
-      // Esconde a dica após o primeiro clique em qualquer hotspot
+      // Mostra a dica quando o tour estiver pronto, esconde ao trocar de cena
+      tour.on("load", () => {
+        showHint();
+      });
       tour.on("scenechange", () => {
         const hint = document.getElementById("tour-hint");
-        if (hint) hint.style.opacity = "0";
+        if (hint) hint.classList.add("opacity-0");
       });
     }
 
-    document.addEventListener("DOMContentLoaded", initTour);
+    initTour();
   </script>
 </Layout>
