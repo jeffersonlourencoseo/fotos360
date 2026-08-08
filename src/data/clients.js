@@ -59,6 +59,19 @@ export const clients = [
     ],
   },
   {
+    id: "gentlemens-barber-beer",
+    name: "Gentlemens Barber Beer",
+    category: "Barbearia",
+    thumbnail: "/panoramas/gentlemens-barber-beer/thumbs/01",
+    photos: [
+      "/panoramas/gentlemens-barber-beer/01.jpg",
+      "/panoramas/gentlemens-barber-beer/02.jpg",
+      "/panoramas/gentlemens-barber-beer/03.jpg",
+      "/panoramas/gentlemens-barber-beer/04.jpg",
+      "/panoramas/gentlemens-barber-beer/05.jpg",
+    ],
+  },
+  {
     id: "delicia-do-iraja",
     name: "Delícia do Irajá",
     category: "Restaurante",
