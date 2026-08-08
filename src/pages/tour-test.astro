@@ -13,6 +13,7 @@ import Layout from "../layouts/Layout.astro";
     src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"
     crossorigin="anonymous"
     is:inline></script>
+
   <main class="min-h-screen flex flex-col bg-[#0a0a0a]">
     <!-- Header -->
     <header class="px-6 py-5 border-b border-[#2a2a2a]">
@@ -34,7 +35,10 @@ import Layout from "../layouts/Layout.astro";
 
     <!-- Viewer -->
     <div class="flex-1 relative">
-      <div id="panorama" class="w-full h-[70vh] md:h-[80vh] flex items-center justify-center text-[#888]">
+      <div
+        id="panorama"
+        class="w-full h-[70vh] md:h-[80vh] flex items-center justify-center text-[#888]"
+      >
         Carregando tour 360°...
       </div>
 
@@ -44,6 +48,17 @@ import Layout from "../layouts/Layout.astro";
         class="absolute top-4 left-1/2 -translate-x-1/2 z-10 px-4 py-2 rounded-full bg-black/70 text-xs md:text-sm text-[#f4f1ea] backdrop-blur-sm pointer-events-none opacity-0 transition-opacity duration-500"
       >
         Clique nas setas para navegar entre os ambientes
+      </div>
+    </div>
+
+    <!-- Debug panel -->
+    <div class="border-t border-[#2a2a2a] bg-[#111] px-6 py-3">
+      <div class="max-w-6xl mx-auto">
+        <p class="text-xs uppercase tracking-wider text-[#888] mb-2">Diagnóstico</p>
+        <pre
+          id="debug-output"
+          class="text-xs text-[#aaa] font-mono whitespace-pre-wrap break-all max-h-32 overflow-y-auto"
+        >Aguardando carregamento...</pre>
       </div>
     </div>
 
@@ -58,26 +73,39 @@ import Layout from "../layouts/Layout.astro";
     </div>
   </main>
 
-  <script>
+  <script is:inline>
     const basePath = "/panoramas/gentlemens-barber-beer";
+    const debugEl = document.getElementById("debug-output");
 
-    // Cenas do tour — uma para cada foto do cliente.
-    // Os hotspots yaw/pitch são posições visuais aproximadas para demonstrar a navegação.
+    function log(msg) {
+      const line = typeof msg === "string" ? msg : JSON.stringify(msg);
+      debugEl.textContent += "\n" + line;
+      debugEl.scrollTop = debugEl.scrollHeight;
+    }
+
     const scenes = {
       entrada: {
         title: "Entrada",
+        type: "equirectangular",
         panorama: `${basePath}/01.jpg`,
         yaw: 0,
         pitch: -3,
+        hfov: 100,
+        minHfov: 50,
+        maxHfov: 120,
         hotSpots: [
           { yaw: 25, pitch: -5, type: "scene", text: "Avançar", sceneId: "recepcao", targetYaw: 180, targetPitch: -3 },
         ],
       },
       recepcao: {
         title: "Recepção",
+        type: "equirectangular",
         panorama: `${basePath}/02.jpg`,
         yaw: 180,
         pitch: -3,
+        hfov: 100,
+        minHfov: 50,
+        maxHfov: 120,
         hotSpots: [
           { yaw: -160, pitch: -5, type: "scene", text: "Voltar", sceneId: "entrada", targetYaw: 0, targetPitch: -3 },
           { yaw: 20, pitch: -5, type: "scene", text: "Avançar", sceneId: "barbearia", targetYaw: 90, targetPitch: -3 },
@@ -85,9 +113,13 @@ import Layout from "../layouts/Layout.astro";
       },
       barbearia: {
         title: "Área de Corte",
+        type: "equirectangular",
         panorama: `${basePath}/03.jpg`,
         yaw: 90,
         pitch: -3,
+        hfov: 100,
+        minHfov: 50,
+        maxHfov: 120,
         hotSpots: [
           { yaw: -90, pitch: -5, type: "scene", text: "Voltar", sceneId: "recepcao", targetYaw: 180, targetPitch: -3 },
           { yaw: 90, pitch: -5, type: "scene", text: "Avançar", sceneId: "espera", targetYaw: -90, targetPitch: -3 },
@@ -95,9 +127,13 @@ import Layout from "../layouts/Layout.astro";
       },
       espera: {
         title: "Lounge / Espera",
+        type: "equirectangular",
         panorama: `${basePath}/04.jpg`,
         yaw: -90,
         pitch: -3,
+        hfov: 100,
+        minHfov: 50,
+        maxHfov: 120,
         hotSpots: [
           { yaw: 90, pitch: -5, type: "scene", text: "Voltar", sceneId: "barbearia", targetYaw: 90, targetPitch: -3 },
           { yaw: -90, pitch: -5, type: "scene", text: "Avançar", sceneId: "bar", targetYaw: 0, targetPitch: -3 },
@@ -105,9 +141,13 @@ import Layout from "../layouts/Layout.astro";
       },
       bar: {
         title: "Bar",
+        type: "equirectangular",
         panorama: `${basePath}/05.jpg`,
         yaw: 0,
         pitch: -3,
+        hfov: 100,
+        minHfov: 50,
+        maxHfov: 120,
         hotSpots: [
           { yaw: 180, pitch: -5, type: "scene", text: "Voltar", sceneId: "espera", targetYaw: -90, targetPitch: -3 },
         ],
@@ -121,26 +161,37 @@ import Layout from "../layouts/Layout.astro";
 
     function initTour() {
       const container = document.getElementById("panorama");
+      log("Iniciando tour...");
 
       if (typeof window.pannellum === "undefined") {
-        container.textContent = "Erro ao carregar o visualizador 360°. Recarregue a página.";
+        container.textContent = "Erro: visualizador 360° não carregou.";
+        log("window.pannellum está undefined");
         return;
       }
+      log("Pannellum carregado: " + typeof window.pannellum);
 
       container.textContent = "";
 
-      const tour = window.pannellum.viewer("panorama", {
-        default: {
-          firstScene: "entrada",
-          sceneFadeDuration: 1000,
-          autoLoad: true,
-          compass: true,
-          northOffset: 0,
-        },
-        scenes,
-      });
+      let tour;
+      try {
+        tour = window.pannellum.viewer("panorama", {
+          default: {
+            firstScene: "entrada",
+            sceneFadeDuration: 1000,
+            autoLoad: true,
+            compass: true,
+            northOffset: 0,
+          },
+          scenes,
+        });
+        log("viewer criado com sucesso");
+      } catch (err) {
+        container.textContent = "Erro ao criar o tour.";
+        log("ERRO ao criar viewer: " + err.message);
+        console.error(err);
+        return;
+      }
 
-      // Gera botões de navegação rápida
       const buttonsContainer = document.getElementById("scene-buttons");
       Object.keys(scenes).forEach((sceneId) => {
         const scene = scenes[sceneId];
@@ -148,20 +199,33 @@ import Layout from "../layouts/Layout.astro";
         btn.className =
           "flex-shrink-0 px-4 py-2 rounded bg-[#1f1f1f] text-sm text-[#f4f1ea] border border-[#333] hover:border-[#c9a227] hover:text-[#c9a227] transition-colors whitespace-nowrap";
         btn.textContent = scene.title;
-        btn.addEventListener("click", () => tour.loadScene(sceneId));
+        btn.addEventListener("click", () => {
+          log("Clique em botão: " + sceneId);
+          tour.loadScene(sceneId);
+        });
         buttonsContainer.appendChild(btn);
       });
 
-      // Mostra a dica quando o tour estiver pronto, esconde ao trocar de cena
       tour.on("load", () => {
+        log("Tour carregado (evento load)");
         showHint();
       });
+
       tour.on("scenechange", () => {
+        log("Cena alterada");
         const hint = document.getElementById("tour-hint");
         if (hint) hint.classList.add("opacity-0");
       });
+
+      tour.on("error", (err) => {
+        log("ERRO do tour: " + (err?.message || JSON.stringify(err)));
+      });
     }
 
-    initTour();
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initTour);
+    } else {
+      initTour();
+    }
   </script>
 </Layout>
