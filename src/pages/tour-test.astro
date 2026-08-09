@@ -486,30 +486,43 @@ import Layout from "../layouts/Layout.astro";
         return;
       }
 
-      // Insere botão de mute dentro dos controles do Pannellum, logo abaixo do zoom
-      const pnlmControls = document.querySelector(".pnlm-controls");
-      if (pnlmControls && !pnlmControls.contains(muteBtn)) {
-        muteBtn.style.marginTop = "4px";
-        pnlmControls.appendChild(muteBtn);
-      } else {
-        // Fallback: canto superior esquerdo
-        const viewerEl = document.getElementById("tour-viewer");
-        if (viewerEl && !viewerEl.contains(muteBtn)) {
-          muteBtn.style.position = "absolute";
-          muteBtn.style.top = "92px";
-          muteBtn.style.left = "8px";
-          viewerEl.appendChild(muteBtn);
-        }
+      // Cria/atualiza botão de mute fora dos controles, empilhado logo abaixo deles
+      const controlsRect = getControlsRect();
+      positionMuteBelowControls(controlsRect);
+
+      // Reanexa/ajusta o mute após o Pannellum renderizar completamente
+      setTimeout(() => {
+        const rect = getControlsRect();
+        positionMuteBelowControls(rect);
+      }, 300);
+      setTimeout(() => {
+        const rect = getControlsRect();
+        positionMuteBelowControls(rect);
+      }, 800);
+
+      function getControlsRect() {
+        const controls = document.querySelector(".pnlm-controls");
+        return controls ? controls.getBoundingClientRect() : null;
       }
 
-      // Reanexa o mute caso o Pannellum reconstrua a área
-      setTimeout(() => {
-        const controls = document.querySelector(".pnlm-controls");
-        if (controls && !controls.contains(muteBtn)) {
-          muteBtn.style.marginTop = "4px";
-          controls.appendChild(muteBtn);
+      function positionMuteBelowControls(rect) {
+        const viewer = document.getElementById("tour-viewer");
+        if (!viewer) return;
+        if (!viewer.contains(muteBtn)) {
+          viewer.appendChild(muteBtn);
         }
-      }, 500);
+        const viewerRect = viewer.getBoundingClientRect();
+        if (rect) {
+          // Alinha na horizontal com os controles nativos e desce 6px abaixo da base deles
+          const left = rect.left - viewerRect.left;
+          const top = rect.bottom - viewerRect.top + 6;
+          muteBtn.style.left = left + "px";
+          muteBtn.style.top = top + "px";
+        } else {
+          muteBtn.style.left = "8px";
+          muteBtn.style.top = "92px";
+        }
+      }
 
       tour.on("load", () => {
         log("load OK");
