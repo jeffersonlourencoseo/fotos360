@@ -111,29 +111,23 @@ import Layout from "../layouts/Layout.astro";
       .tour-logo { height: 58px; max-width: 150px; top: 10px; right: 10px; }
     }
 
+    /* Alinha botão de mute junto aos controles nativos do Pannellum (.pnlm-zoom-controls) */
     .tour-mute-btn {
-      position: absolute;
-      top: 92px;
-      left: 8px;
-      z-index: 65;
       width: 26px;
       height: 26px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(255,255,255,0.18);
-      border: 1px solid rgba(255,255,255,0.35);
-      border-radius: 50%;
+      background: rgba(134,134,134,0.8);
+      border: none;
+      border-radius: 3px;
       cursor: pointer;
       color: #fff;
-      transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      transition: background 0.15s, opacity 0.15s;
     }
-    .tour-mute-btn:hover { background: rgba(255,255,255,0.35); border-color: rgba(255,255,255,0.6); }
-    .tour-mute-btn svg { width: 14px; height: 14px; fill: currentColor; }
-    @media (max-width: 768px) {
-      .tour-mute-btn { top: 86px; left: 6px; width: 24px; height: 24px; }
-      .tour-mute-btn svg { width: 13px; height: 13px; }
-    }
+    .tour-mute-btn:hover { background: rgba(100,100,100,0.95); }
+    .tour-mute-btn svg { width: 15px; height: 15px; fill: currentColor; }
 
     .tour-footer {
       position: absolute;
@@ -492,15 +486,29 @@ import Layout from "../layouts/Layout.astro";
         return;
       }
 
-      // Insere botão de mute no canto superior esquerdo do visualizador
-      const viewerEl = document.getElementById("tour-viewer");
-      if (viewerEl && !viewerEl.contains(muteBtn)) {
-        viewerEl.appendChild(muteBtn);
+      // Insere botão de mute dentro dos controles do Pannellum, logo abaixo do zoom
+      const pnlmControls = document.querySelector(".pnlm-controls");
+      if (pnlmControls && !pnlmControls.contains(muteBtn)) {
+        muteBtn.style.marginTop = "4px";
+        pnlmControls.appendChild(muteBtn);
+      } else {
+        // Fallback: canto superior esquerdo
+        const viewerEl = document.getElementById("tour-viewer");
+        if (viewerEl && !viewerEl.contains(muteBtn)) {
+          muteBtn.style.position = "absolute";
+          muteBtn.style.top = "92px";
+          muteBtn.style.left = "8px";
+          viewerEl.appendChild(muteBtn);
+        }
       }
 
       // Reanexa o mute caso o Pannellum reconstrua a área
       setTimeout(() => {
-        if (viewerEl && !viewerEl.contains(muteBtn)) viewerEl.appendChild(muteBtn);
+        const controls = document.querySelector(".pnlm-controls");
+        if (controls && !controls.contains(muteBtn)) {
+          muteBtn.style.marginTop = "4px";
+          controls.appendChild(muteBtn);
+        }
       }, 500);
 
       tour.on("load", () => {
