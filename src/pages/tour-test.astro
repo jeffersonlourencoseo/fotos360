@@ -113,22 +113,30 @@ import Layout from "../layouts/Layout.astro";
 
     /* Alinha botão de mute junto aos controles nativos do Pannellum (.pnlm-zoom-controls) */
     .tour-mute-btn {
+      position: absolute;
+      top: 86px;
+      left: 8px;
+      z-index: 70;
       width: 26px;
       height: 26px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(134,134,134,0.8);
+      background: rgba(134,134,134,0.9);
       border: none;
       border-radius: 3px;
       cursor: pointer;
       color: #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
       transition: background 0.15s, opacity 0.15s;
       pointer-events: auto;
     }
-    .tour-mute-btn:hover { background: rgba(100,100,100,0.95); }
+    .tour-mute-btn:hover { background: rgba(100,100,100,0.98); }
     .tour-mute-btn svg { width: 15px; height: 15px; fill: currentColor; }
+    @media (max-width: 768px) {
+      .tour-mute-btn { top: 82px; left: 6px; width: 24px; height: 24px; }
+      .tour-mute-btn svg { width: 13px; height: 13px; }
+    }
 
     .tour-footer {
       position: absolute;
@@ -487,37 +495,16 @@ import Layout from "../layouts/Layout.astro";
         return;
       }
 
-      // Empilha botão de mute nos controles nativos do Pannellum
-      const pnlmControls = document.querySelector(".pnlm-controls");
-      if (pnlmControls) {
-        // Força o container de controles a empilhar verticalmente
-        pnlmControls.style.display = "flex";
-        pnlmControls.style.flexDirection = "column";
-        pnlmControls.style.alignItems = "center";
-        pnlmControls.style.gap = "4px";
-        if (!pnlmControls.contains(muteBtn)) {
-          pnlmControls.appendChild(muteBtn);
-        }
-      } else {
-        // Fallback: canto superior esquerdo
-        const viewerEl = document.getElementById("tour-viewer");
-        if (viewerEl && !viewerEl.contains(muteBtn)) {
-          muteBtn.style.position = "absolute";
-          muteBtn.style.top = "92px";
-          muteBtn.style.left = "8px";
-          viewerEl.appendChild(muteBtn);
-        }
+      // Adiciona botão de mute ao visualizador, posicionado via CSS abaixo dos controles nativos
+      const viewerEl = document.getElementById("tour-viewer");
+      if (viewerEl && !viewerEl.contains(muteBtn)) {
+        viewerEl.appendChild(muteBtn);
       }
 
-      // Reanexa o mute se o Pannellum reconstruir os controles
+      // Garante que o mute permaneça visível mesmo após reconstrução
       setTimeout(() => {
-        const controls = document.querySelector(".pnlm-controls");
-        if (controls && !controls.contains(muteBtn)) {
-          controls.style.display = "flex";
-          controls.style.flexDirection = "column";
-          controls.style.alignItems = "center";
-          controls.style.gap = "4px";
-          controls.appendChild(muteBtn);
+        if (viewerEl && !viewerEl.contains(muteBtn)) {
+          viewerEl.appendChild(muteBtn);
         }
       }, 500);
 
