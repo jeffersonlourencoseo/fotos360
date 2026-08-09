@@ -236,8 +236,9 @@ import Layout from "../layouts/Layout.astro";
         minHfov: 50,
         maxHfov: 120,
         hotSpots: [
-          { yaw: 8.3, pitch: -12.6, type: "scene", cssClass: "hotspot-pulse-btn", createTooltipFunc: renderPulseHotspot, createTooltipArgs: "Área de Corte 1", text: "Área de Corte 1", sceneId: "area-de-corte-1", targetYaw: 169.3, targetPitch: -9.5 },
-          { yaw: -176.1, pitch: -7.7, type: "scene", cssClass: "hotspot-pulse-btn", createTooltipFunc: renderPulseHotspot, createTooltipArgs: "Área de Corte 3", text: "Área de Corte 3", sceneId: "area-de-corte-3", targetYaw: 2.4, targetPitch: -5 },
+          // Imagem 04.jpg rotacionada 180°: hotspots internos compensados para permanecer no mesmo local visual.
+          { yaw: -171.7, pitch: -12.6, type: "scene", cssClass: "hotspot-pulse-btn", createTooltipFunc: renderPulseHotspot, createTooltipArgs: "Área de Corte 1", text: "Área de Corte 1", sceneId: "area-de-corte-1", targetYaw: 169.3, targetPitch: -9.5 },
+          { yaw: 3.9, pitch: -7.7, type: "scene", cssClass: "hotspot-pulse-btn", createTooltipFunc: renderPulseHotspot, createTooltipArgs: "Área de Corte 3", text: "Área de Corte 3", sceneId: "area-de-corte-3", targetYaw: 2.4, targetPitch: -5 },
         ],
       },
       "area-de-corte-3": {
