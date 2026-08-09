@@ -70,6 +70,7 @@ export const clients = [
       "/panoramas/gentlemens-barber-beer/04.jpg",
       "/panoramas/gentlemens-barber-beer/05.jpg",
     ],
+    tourUrl: "/tour-test",
   },
   {
     id: "delicia-do-iraja",
