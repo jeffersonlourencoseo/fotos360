@@ -34,49 +34,25 @@ import Layout from "../layouts/Layout.astro";
     .street-arrow:hover { opacity: 1; transform: scale(1.1); }
     */
 
-    /* Hotspot pulsante com logo — Gentlemens Barber Beer */
+    /* Hotspot simples com logo — Gentlemens Barber Beer */
     .hotspot-pulse-btn {
-      position: relative;
-      width: 56px;
-      height: 56px;
-      margin-left: -28px !important;
-      margin-top: -28px !important;
-      border-radius: 50%;
-      background: #000;
-      background-image: url("/assets/logo-gentlemens-barber-beer.png");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      border: 2px solid rgba(255, 255, 255, 0.9);
-      box-shadow: 0 0 10px rgba(0,0,0,0.6);
+      width: 52px !important;
+      height: 52px !important;
+      margin-left: -26px !important;
+      margin-top: -26px !important;
+      border-radius: 50% !important;
+      background: #000 !important;
+      background-image: url("/assets/logo-gentlemens-barber-beer.png") !important;
+      background-size: cover !important;
+      background-position: center !important;
+      background-repeat: no-repeat !important;
+      border: 2px solid #fff !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
       cursor: pointer !important;
-      z-index: 2;
-    }
-    /* Anel de pulso externo */
-    .hotspot-pulse-btn::before,
-    .hotspot-pulse-btn::after {
-      content: "";
-      position: absolute;
-      top: -4px;
-      left: -4px;
-      right: -4px;
-      bottom: -4px;
-      border-radius: 50%;
-      border: 3px solid rgba(255, 255, 255, 0.85);
-      z-index: -1;
-      animation: pulse-expand 1.8s ease-out infinite;
-      pointer-events: none;
-    }
-    .hotspot-pulse-btn::after {
-      animation-delay: 0.9s;
-    }
-    @keyframes pulse-expand {
-      0% { transform: scale(1); opacity: 0.9; }
-      100% { transform: scale(1.55); opacity: 0; }
     }
     .hotspot-pulse-btn:hover {
-      transform: scale(1.05);
-      transition: transform 0.2s;
+      transform: scale(1.1);
+      transition: transform 0.15s;
     }
     .pnlm-tooltip {
       background: rgba(0,0,0,0.75) !important;
@@ -87,9 +63,8 @@ import Layout from "../layouts/Layout.astro";
       font-family: sans-serif !important;
       white-space: nowrap !important;
     }
-    /* Mobile: hotspot um pouco menor */
     @media (max-width: 768px) {
-      .hotspot-pulse-btn { width: 46px; height: 46px; margin-left: -23px !important; margin-top: -23px !important; }
+      .hotspot-pulse-btn { width: 42px !important; height: 42px !important; margin-left: -21px !important; margin-top: -21px !important; }
     }
   </style>
 
