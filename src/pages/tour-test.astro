@@ -34,27 +34,25 @@ import Layout from "../layouts/Layout.astro";
     .street-arrow:hover { opacity: 1; transform: scale(1.1); }
     */
 
-    /* Hotspot com logo — centralizado via translate(-50%, -50%) */
+    /* Hotspot com logo — posicionado pelo centro do div */
     .hotspot-pulse-btn {
-      position: absolute !important;
-      width: 56px !important;
-      height: 56px !important;
-      transform: translate(-50%, -50%) !important;
-      border-radius: 50% !important;
-      cursor: pointer !important;
-      overflow: hidden !important;
+      width: 56px;
+      height: 56px;
+      margin-left: -28px;
+      margin-top: -28px;
+      border-radius: 50%;
+      cursor: pointer;
+      overflow: hidden;
       box-shadow: 0 2px 10px rgba(0,0,0,0.7);
-      border: 2px solid rgba(255,255,255,0.9) !important;
-      background: #000 !important;
-    }
-    .hotspot-pulse-btn img {
-      width: 100% !important;
-      height: 100% !important;
-      object-fit: cover !important;
-      display: block !important;
+      border: 2px solid rgba(255,255,255,0.9);
+      background: #000;
+      background-image: url("/assets/logo-gentlemens-barber-beer.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
     }
     .hotspot-pulse-btn:hover {
-      transform: translate(-50%, -50%) scale(1.1) !important;
+      transform: scale(1.1);
       transition: transform 0.15s;
     }
     .pnlm-tooltip {
@@ -67,7 +65,7 @@ import Layout from "../layouts/Layout.astro";
       white-space: nowrap !important;
     }
     @media (max-width: 768px) {
-      .hotspot-pulse-btn { width: 44px !important; height: 44px !important; }
+      .hotspot-pulse-btn { width: 44px; height: 44px; margin-left: -22px; margin-top: -22px; }
     }
   </style>
 
@@ -147,10 +145,6 @@ import Layout from "../layouts/Layout.astro";
     const basePath = "/panoramas/gentlemens-barber-beer";
     const debugEl = document.getElementById("debug-output");
 
-    function renderHotspot(hotSpotDiv, args) {
-      hotSpotDiv.innerHTML = `<img src="/assets/logo-gentlemens-barber-beer.png" alt="${args || 'Navegar'}" draggable="false" />`;
-    }
-
     function log(msg) {
       const line = typeof msg === "string" ? msg : JSON.stringify(msg);
       debugEl.textContent += "\n" + line;
@@ -168,7 +162,7 @@ import Layout from "../layouts/Layout.astro";
         minHfov: 50,
         maxHfov: 120,
         hotSpots: [
-          { yaw: 1.7, pitch: 7, type: "scene", cssClass: "hotspot-pulse-btn", createTooltipFunc: renderHotspot, createTooltipArgs: "Lounge", text: "Lounge", sceneId: "lounge", targetYaw: 2, targetPitch: -9.8 },
+          { yaw: 1.7, pitch: 7, type: "scene", cssClass: "hotspot-pulse-btn", text: "Lounge", sceneId: "lounge", targetYaw: 2, targetPitch: -9.8 },
         ],
       },
       lounge: {
@@ -181,8 +175,8 @@ import Layout from "../layouts/Layout.astro";
         minHfov: 50,
         maxHfov: 120,
         hotSpots: [
-          { yaw: 172.6, pitch: -9.8, type: "scene", cssClass: "hotspot-pulse-btn", createTooltipFunc: renderHotspot, createTooltipArgs: "Fachada", text: "Fachada", sceneId: "fachada", targetYaw: -7, targetPitch: 0 },
-          { yaw: -0.1, pitch: -0.5, type: "scene", cssClass: "hotspot-pulse-btn", createTooltipFunc: renderHotspot, createTooltipArgs: "Área de Corte 1", text: "Área de Corte 1", sceneId: "area-de-corte-1", targetYaw: -4.4, targetPitch: -5.2 },
+          { yaw: 172.6, pitch: -9.8, type: "scene", cssClass: "hotspot-pulse-btn", text: "Fachada", sceneId: "fachada", targetYaw: -7, targetPitch: 0 },
+          { yaw: -0.1, pitch: -0.5, type: "scene", cssClass: "hotspot-pulse-btn", text: "Área de Corte 1", sceneId: "area-de-corte-1", targetYaw: -4.4, targetPitch: -5.2 },
         ],
       },
       "area-de-corte-1": {
@@ -195,8 +189,8 @@ import Layout from "../layouts/Layout.astro";
         minHfov: 50,
         maxHfov: 120,
         hotSpots: [
-          { yaw: 169.3, pitch: -9.5, type: "scene", cssClass: "hotspot-pulse-btn", createTooltipFunc: renderHotspot, createTooltipArgs: "Lounge", text: "Lounge", sceneId: "lounge", targetYaw: -0.1, targetPitch: -0.5 },
-          { yaw: -4.4, pitch: -5.2, type: "scene", cssClass: "hotspot-pulse-btn", createTooltipFunc: renderHotspot, createTooltipArgs: "Área de Corte 2", text: "Área de Corte 2", sceneId: "area-de-corte-2", targetYaw: -2.1, targetPitch: -5.1 },
+          { yaw: 169.3, pitch: -9.5, type: "scene", cssClass: "hotspot-pulse-btn", text: "Lounge", sceneId: "lounge", targetYaw: -0.1, targetPitch: -0.5 },
+          { yaw: -4.4, pitch: -5.2, type: "scene", cssClass: "hotspot-pulse-btn", text: "Área de Corte 2", sceneId: "area-de-corte-2", targetYaw: -2.1, targetPitch: -5.1 },
         ],
       },
       "area-de-corte-2": {
@@ -209,8 +203,8 @@ import Layout from "../layouts/Layout.astro";
         minHfov: 50,
         maxHfov: 120,
         hotSpots: [
-          { yaw: -2.1, pitch: -5.1, type: "scene", cssClass: "hotspot-pulse-btn", createTooltipFunc: renderHotspot, createTooltipArgs: "Área de Corte 1", text: "Área de Corte 1", sceneId: "area-de-corte-1", targetYaw: 169.3, targetPitch: -9.5 },
-          { yaw: -174, pitch: -5.7, type: "scene", cssClass: "hotspot-pulse-btn", createTooltipFunc: renderHotspot, createTooltipArgs: "Área de Corte 3", text: "Área de Corte 3", sceneId: "area-de-corte-3", targetYaw: 2.4, targetPitch: -5 },
+          { yaw: -2.1, pitch: -5.1, type: "scene", cssClass: "hotspot-pulse-btn", text: "Área de Corte 1", sceneId: "area-de-corte-1", targetYaw: 169.3, targetPitch: -9.5 },
+          { yaw: -174, pitch: -5.7, type: "scene", cssClass: "hotspot-pulse-btn", text: "Área de Corte 3", sceneId: "area-de-corte-3", targetYaw: 2.4, targetPitch: -5 },
         ],
       },
       "area-de-corte-3": {
@@ -223,7 +217,7 @@ import Layout from "../layouts/Layout.astro";
         minHfov: 50,
         maxHfov: 120,
         hotSpots: [
-          { yaw: 2.4, pitch: -5, type: "scene", cssClass: "hotspot-pulse-btn", createTooltipFunc: renderHotspot, createTooltipArgs: "Área de Corte 2", text: "Área de Corte 2", sceneId: "area-de-corte-2", targetYaw: -174, targetPitch: -5.7 },
+          { yaw: 2.4, pitch: -5, type: "scene", cssClass: "hotspot-pulse-btn", text: "Área de Corte 2", sceneId: "area-de-corte-2", targetYaw: -174, targetPitch: -5.7 },
         ],
       },
     };
