@@ -125,6 +125,7 @@ import Layout from "../layouts/Layout.astro";
       color: #fff;
       box-shadow: 0 2px 4px rgba(0,0,0,0.3);
       transition: background 0.15s, opacity 0.15s;
+      pointer-events: auto;
     }
     .tour-mute-btn:hover { background: rgba(100,100,100,0.95); }
     .tour-mute-btn svg { width: 15px; height: 15px; fill: currentColor; }
@@ -486,43 +487,39 @@ import Layout from "../layouts/Layout.astro";
         return;
       }
 
-      // Cria/atualiza botão de mute fora dos controles, empilhado logo abaixo deles
-      const controlsRect = getControlsRect();
-      positionMuteBelowControls(controlsRect);
-
-      // Reanexa/ajusta o mute após o Pannellum renderizar completamente
-      setTimeout(() => {
-        const rect = getControlsRect();
-        positionMuteBelowControls(rect);
-      }, 300);
-      setTimeout(() => {
-        const rect = getControlsRect();
-        positionMuteBelowControls(rect);
-      }, 800);
-
-      function getControlsRect() {
-        const controls = document.querySelector(".pnlm-controls");
-        return controls ? controls.getBoundingClientRect() : null;
-      }
-
-      function positionMuteBelowControls(rect) {
-        const viewer = document.getElementById("tour-viewer");
-        if (!viewer) return;
-        if (!viewer.contains(muteBtn)) {
-          viewer.appendChild(muteBtn);
+      // Empilha botão de mute nos controles nativos do Pannellum
+      const pnlmControls = document.querySelector(".pnlm-controls");
+      if (pnlmControls) {
+        // Força o container de controles a empilhar verticalmente
+        pnlmControls.style.display = "flex";
+        pnlmControls.style.flexDirection = "column";
+        pnlmControls.style.alignItems = "center";
+        pnlmControls.style.gap = "4px";
+        if (!pnlmControls.contains(muteBtn)) {
+          pnlmControls.appendChild(muteBtn);
         }
-        const viewerRect = viewer.getBoundingClientRect();
-        if (rect) {
-          // Alinha na horizontal com os controles nativos e desce 6px abaixo da base deles
-          const left = rect.left - viewerRect.left;
-          const top = rect.bottom - viewerRect.top + 6;
-          muteBtn.style.left = left + "px";
-          muteBtn.style.top = top + "px";
-        } else {
-          muteBtn.style.left = "8px";
+      } else {
+        // Fallback: canto superior esquerdo
+        const viewerEl = document.getElementById("tour-viewer");
+        if (viewerEl && !viewerEl.contains(muteBtn)) {
+          muteBtn.style.position = "absolute";
           muteBtn.style.top = "92px";
+          muteBtn.style.left = "8px";
+          viewerEl.appendChild(muteBtn);
         }
       }
+
+      // Reanexa o mute se o Pannellum reconstruir os controles
+      setTimeout(() => {
+        const controls = document.querySelector(".pnlm-controls");
+        if (controls && !controls.contains(muteBtn)) {
+          controls.style.display = "flex";
+          controls.style.flexDirection = "column";
+          controls.style.alignItems = "center";
+          controls.style.gap = "4px";
+          controls.appendChild(muteBtn);
+        }
+      }, 500);
 
       tour.on("load", () => {
         log("load OK");
