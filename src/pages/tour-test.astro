@@ -97,7 +97,7 @@ import Layout from "../layouts/Layout.astro";
     .tour-logo {
       position: absolute;
       top: 14px;
-      left: 14px;
+      right: 14px;
       z-index: 60;
       height: 88px;
       width: auto;
@@ -108,10 +108,14 @@ import Layout from "../layouts/Layout.astro";
       user-select: none;
     }
     @media (max-width: 768px) {
-      .tour-logo { height: 58px; max-width: 150px; top: 10px; left: 10px; }
+      .tour-logo { height: 58px; max-width: 150px; top: 10px; right: 10px; }
     }
 
     .tour-mute-btn {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      z-index: 65;
       width: 26px;
       height: 26px;
       display: flex;
@@ -265,16 +269,6 @@ import Layout from "../layouts/Layout.astro";
       </div>
     </div>
 
-    <!-- Scene thumbnails -->
-    <div class="border-t border-[#2a2a2a] bg-[#111]">
-      <div class="max-w-6xl mx-auto px-6 py-4">
-        <p class="text-xs uppercase tracking-wider text-[#888] mb-3">Navegação rápida</p>
-        <div class="flex gap-3 overflow-x-auto pb-2" id="scene-buttons">
-          <!-- Botões gerados pelo JS -->
-        </div>
-      </div>
-    </div>
-
     <!-- Debug panel (escondido no site, visível só no console) -->
     <div class="hidden border-t border-[#2a2a2a] bg-[#0f0f0f] px-6 py-3">
       <div class="max-w-6xl mx-auto">
@@ -351,7 +345,7 @@ import Layout from "../layouts/Layout.astro";
       });
     }
 
-    // Botão de mute — criado dinamicamente e empilhado nos controles do Pannellum
+    // Botão de mute — criado dinamicamente e posicionado no canto superior esquerdo
     const muteBtn = document.createElement("button");
     muteBtn.type = "button";
     muteBtn.className = "tour-mute-btn";
@@ -361,24 +355,6 @@ import Layout from "../layouts/Layout.astro";
       toggleMute();
     });
     updateMuteIcon();
-
-    function attachMuteButton() {
-      // Tenta inserir junto aos controles nativos do Pannellum
-      const pnlmControls = document.querySelector(".pnlm-controls");
-      if (pnlmControls && !pnlmControls.contains(muteBtn)) {
-        pnlmControls.appendChild(muteBtn);
-      } else {
-        // Fallback: posiciona no canto superior direito do container
-        const container = document.querySelector("#panorama");
-        if (container && !container.contains(muteBtn)) {
-          muteBtn.style.position = "absolute";
-          muteBtn.style.top = "8px";
-          muteBtn.style.right = "8px";
-          muteBtn.style.zIndex = "60";
-          container.appendChild(muteBtn);
-        }
-      }
-    }
 
     const scenes = {
       fachada: {
@@ -498,25 +474,16 @@ import Layout from "../layouts/Layout.astro";
         return;
       }
 
-      // Empilha botão de mute nos controles do Pannellum
-      attachMuteButton();
-      // Se os controles forem recriados, reanexa o botão
-      setTimeout(attachMuteButton, 200);
-      setTimeout(attachMuteButton, 800);
+      // Insere botão de mute no canto superior esquerdo do visualizador
+      const viewerEl = document.getElementById("tour-viewer");
+      if (viewerEl && !viewerEl.contains(muteBtn)) {
+        viewerEl.appendChild(muteBtn);
+      }
 
-      const buttonsContainer = document.getElementById("scene-buttons");
-      Object.keys(scenes).forEach((sceneId) => {
-        const scene = scenes[sceneId];
-        const btn = document.createElement("button");
-        btn.className =
-          "flex-shrink-0 px-4 py-2 rounded bg-[#1f1f1f] text-sm text-[#f4f1ea] border border-[#333] hover:border-[#c9a227] hover:text-[#c9a227] transition-colors whitespace-nowrap";
-        btn.textContent = scene.title;
-        btn.addEventListener("click", () => {
-          log("botão: " + sceneId);
-          tour.loadScene(sceneId);
-        });
-        buttonsContainer.appendChild(btn);
-      });
+      // Reanexa o mute caso o Pannellum reconstrua a área
+      setTimeout(() => {
+        if (viewerEl && !viewerEl.contains(muteBtn)) viewerEl.appendChild(muteBtn);
+      }, 500);
 
       tour.on("load", () => {
         log("load OK");
