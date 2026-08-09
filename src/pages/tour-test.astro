@@ -92,6 +92,84 @@ import Layout from "../layouts/Layout.astro";
     @media (max-width: 768px) {
       .hotspot-pulse-btn { width: 44px; height: 44px; margin-left: -22px; margin-top: -22px; }
     }
+
+    /* Overlays do tour: logo, mute e rodapé */
+    .tour-logo {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 60;
+      height: 88px;
+      width: auto;
+      max-width: 220px;
+      object-fit: contain;
+      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.8)) drop-shadow(0 0 6px rgba(0,0,0,0.5));
+      pointer-events: none;
+      user-select: none;
+    }
+    @media (max-width: 768px) {
+      .tour-logo { height: 58px; max-width: 150px; top: 10px; left: 10px; }
+    }
+
+    .tour-mute-btn {
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 50%;
+      cursor: pointer;
+      color: #fff;
+      transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+    }
+    .tour-mute-btn:hover { background: rgba(255,255,255,0.35); border-color: rgba(255,255,255,0.6); }
+    .tour-mute-btn svg { width: 14px; height: 14px; fill: currentColor; }
+
+    .tour-footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: rgba(10,10,10,0.82);
+      border-top: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(4px);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tour-footer::-webkit-scrollbar { display: none; }
+    .tour-footer-btn {
+      flex: 0 0 auto;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: #fff;
+      text-transform: uppercase;
+      padding: 8px 12px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .tour-footer-btn:hover { background: rgba(201,162,39,0.18); border-color: rgba(201,162,39,0.5); color: #c9a227; }
+    @media (max-width: 768px) {
+      .tour-footer { padding: 8px 10px; gap: 6px; }
+      .tour-footer-btn { font-size: 10px; padding: 7px 9px; }
+    }
+
+    /* Esconde os elementos do tour antes de iniciar */
+    #tour-viewer:not(.tour-active) .tour-overlay,
+    #tour-viewer:not(.tour-active) .tour-footer {
+      display: none !important;
+    }
   </style>
 
   <main class="min-h-screen flex flex-col bg-[#0a0a0a]">
@@ -116,7 +194,7 @@ import Layout from "../layouts/Layout.astro";
     <!-- Viewer -->
     <div class="px-4 py-6 md:px-8">
       <div class="max-w-5xl mx-auto">
-        <div class="relative h-[400px] md:h-[520px] rounded-xl overflow-hidden border border-[#2a2a2a]">
+        <div id="tour-viewer" class="relative h-[400px] md:h-[520px] rounded-xl overflow-hidden border border-[#2a2a2a]">
           <div
             id="panorama"
             class="absolute inset-0 w-full h-full bg-red-900/40 flex items-center justify-center text-[#f4f1ea] text-center px-6"
@@ -140,6 +218,49 @@ import Layout from "../layouts/Layout.astro";
           >
             Arraste para olhar ao redor. Clique nas setas para andar pelo ambiente.
           </div>
+
+          <!-- Logo sobreposta -->
+          <img
+            src="/assets/logo-gentlemens-tour.png"
+            alt="Gentlemens Barber Beer"
+            class="tour-logo tour-overlay"
+          />
+
+          <!-- Rodapé de ações -->
+          <nav class="tour-footer tour-overlay" aria-label="Ações do tour">
+            <a
+              href="https://sites.appbarber.com.br/gentlemensbarbe-g7lf"
+              target="_blank"
+              rel="noopener"
+              class="tour-footer-btn"
+            >
+              Agendamento
+            </a>
+            <a
+              href="https://wa.me/5521991682886"
+              target="_blank"
+              rel="noopener"
+              class="tour-footer-btn"
+            >
+              WhatsApp
+            </a>
+            <a
+              href="https://maps.app.goo.gl/qgZazfjFtga67jgu8"
+              target="_blank"
+              rel="noopener"
+              class="tour-footer-btn"
+            >
+              Localização
+            </a>
+            <a
+              href="https://www.instagram.com/barbearia.gentlemens/"
+              target="_blank"
+              rel="noopener"
+              class="tour-footer-btn"
+            >
+              Instagram
+            </a>
+          </nav>
         </div>
       </div>
     </div>
@@ -166,6 +287,8 @@ import Layout from "../layouts/Layout.astro";
     </div>
   </main>
 
+  <audio id="tour-audio" src="/assets/audio/gentlemens-musica-ambiente.mp3" loop preload="auto" style="display:none"></audio>
+
   <script is:inline>
     const basePath = "/panoramas/gentlemens-barber-beer";
     const debugEl = document.getElementById("debug-output");
@@ -182,6 +305,79 @@ import Layout from "../layouts/Layout.astro";
       const line = typeof msg === "string" ? msg : JSON.stringify(msg);
       debugEl.textContent += "\n" + line;
       debugEl.scrollTop = debugEl.scrollHeight;
+    }
+
+    // ---- Áudio ambiente + mute ----
+    const audio = document.getElementById("tour-audio");
+    let audioStarted = false;
+    let userExplicitlyMuted = false;
+
+    function updateMuteIcon() {
+      const isMuted = audio.muted || audio.volume === 0;
+      if (!muteBtn) return;
+      muteBtn.innerHTML = isMuted
+        ? `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+             <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3 3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4 9.91 6.09 12 8.18V4z"/>
+           </svg>`
+        : `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+           </svg>`;
+      muteBtn.setAttribute("aria-label", isMuted ? "Ativar som" : "Silenciar");
+      muteBtn.title = isMuted ? "Ativar som" : "Silenciar";
+    }
+
+    function toggleMute() {
+      const nextMuted = !audio.muted;
+      audio.muted = nextMuted;
+      userExplicitlyMuted = nextMuted;
+      if (!nextMuted && audio.volume === 0) audio.volume = 0.5;
+      updateMuteIcon();
+    }
+
+    function startAmbientAudio() {
+      if (audioStarted) return;
+      audioStarted = true;
+      if (audio.volume === 0) audio.volume = 0.5;
+      audio.muted = userExplicitlyMuted;
+      audio.play().then(() => {
+        log("Áudio iniciado");
+        if (!userExplicitlyMuted) audio.muted = false;
+        updateMuteIcon();
+      }).catch((err) => {
+        log("Áudio bloqueado: " + (err?.message || err));
+        // Se o navegador bloquear, mantém mutado até nova interação.
+        audio.muted = true;
+        updateMuteIcon();
+      });
+    }
+
+    // Botão de mute — criado dinamicamente e empilhado nos controles do Pannellum
+    const muteBtn = document.createElement("button");
+    muteBtn.type = "button";
+    muteBtn.className = "tour-mute-btn";
+    muteBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!audioStarted) startAmbientAudio();
+      toggleMute();
+    });
+    updateMuteIcon();
+
+    function attachMuteButton() {
+      // Tenta inserir junto aos controles nativos do Pannellum
+      const pnlmControls = document.querySelector(".pnlm-controls");
+      if (pnlmControls && !pnlmControls.contains(muteBtn)) {
+        pnlmControls.appendChild(muteBtn);
+      } else {
+        // Fallback: posiciona no canto superior direito do container
+        const container = document.querySelector("#panorama");
+        if (container && !container.contains(muteBtn)) {
+          muteBtn.style.position = "absolute";
+          muteBtn.style.top = "8px";
+          muteBtn.style.right = "8px";
+          muteBtn.style.zIndex = "60";
+          container.appendChild(muteBtn);
+        }
+      }
     }
 
     const scenes = {
@@ -263,6 +459,7 @@ import Layout from "../layouts/Layout.astro";
 
     function initTour() {
       const container = document.getElementById("panorama");
+      const viewer = document.getElementById("tour-viewer");
       const startScreen = document.getElementById("start-screen");
       log("Iniciando tour...");
 
@@ -273,10 +470,14 @@ import Layout from "../layouts/Layout.astro";
       }
       log("Pannellum carregado");
 
+      // Ativa áudio ambiente na primeira interação (start).
+      startAmbientAudio();
+
       if (startScreen) startScreen.remove();
       container.classList.remove("flex", "items-center", "justify-center", "text-[#f4f1ea]", "text-center", "px-6");
       container.classList.add("bg-black");
       container.textContent = "";
+      viewer?.classList.add("tour-active");
 
       let tour;
       try {
@@ -296,6 +497,12 @@ import Layout from "../layouts/Layout.astro";
         console.error(err);
         return;
       }
+
+      // Empilha botão de mute nos controles do Pannellum
+      attachMuteButton();
+      // Se os controles forem recriados, reanexa o botão
+      setTimeout(attachMuteButton, 200);
+      setTimeout(attachMuteButton, 800);
 
       const buttonsContainer = document.getElementById("scene-buttons");
       Object.keys(scenes).forEach((sceneId) => {
