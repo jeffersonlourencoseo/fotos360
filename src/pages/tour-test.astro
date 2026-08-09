@@ -111,31 +111,23 @@ import Layout from "../layouts/Layout.astro";
       .tour-logo { height: 58px; max-width: 150px; top: 10px; right: 10px; }
     }
 
-    /* Alinha botão de mute junto aos controles nativos do Pannellum (.pnlm-zoom-controls) */
-    .tour-mute-btn {
-      position: absolute;
-      top: 86px;
-      left: 8px;
-      z-index: 70;
+    /* Mute reaproveita as classes nativas .pnlm-controls .pnlm-control.
+       Só força o mesmo tamanho dos outros botões e centraliza o SVG. */
+    .tour-mute-native {
       width: 26px;
       height: 26px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(134,134,134,0.9);
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-      color: #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-      transition: background 0.15s, opacity 0.15s;
+      padding: 0;
+      box-sizing: border-box;
       pointer-events: auto;
     }
-    .tour-mute-btn:hover { background: rgba(100,100,100,0.98); }
-    .tour-mute-btn svg { width: 15px; height: 15px; fill: currentColor; }
-    @media (max-width: 768px) {
-      .tour-mute-btn { top: 82px; left: 6px; width: 24px; height: 24px; }
-      .tour-mute-btn svg { width: 13px; height: 13px; }
+    .tour-mute-native svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+      color: #000;
     }
 
     .tour-footer {
@@ -366,10 +358,11 @@ import Layout from "../layouts/Layout.astro";
       });
     }
 
-    // Botão de mute — criado dinamicamente e posicionado no canto superior esquerdo
+    // Botão de mute — usa as MESMAS classes dos botões nativos do Pannellum
     const muteBtn = document.createElement("button");
     muteBtn.type = "button";
-    muteBtn.className = "tour-mute-btn";
+    muteBtn.className = "pnlm-controls pnlm-control tour-mute-native";
+    muteBtn.style.cssText = "";
     muteBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       if (!audioStarted) startAmbientAudio();
@@ -495,16 +488,17 @@ import Layout from "../layouts/Layout.astro";
         return;
       }
 
-      // Adiciona botão de mute ao visualizador, posicionado via CSS abaixo dos controles nativos
-      const viewerEl = document.getElementById("tour-viewer");
-      if (viewerEl && !viewerEl.contains(muteBtn)) {
-        viewerEl.appendChild(muteBtn);
+      // Adiciona botão de mute dentro do MESMO container dos controles nativos do Pannellum
+      const controlsContainer = document.querySelector(".pnlm-controls-container");
+      if (controlsContainer && !controlsContainer.contains(muteBtn)) {
+        controlsContainer.appendChild(muteBtn);
       }
 
-      // Garante que o mute permaneça visível mesmo após reconstrução
+      // Garante que o mute permaneça no container de controles mesmo após reconstrução
       setTimeout(() => {
-        if (viewerEl && !viewerEl.contains(muteBtn)) {
-          viewerEl.appendChild(muteBtn);
+        const cc = document.querySelector(".pnlm-controls-container");
+        if (cc && !cc.contains(muteBtn)) {
+          cc.appendChild(muteBtn);
         }
       }, 500);
 
